@@ -10,12 +10,15 @@ class SetCosmology:
     ld = results.luminosity_distance(z=np.linspace(0, 4))
     hp = results.hubble_parameter(z=np.linspace(0, 4))
 
+    @staticmethod
     def get_pars(self):
         return self.pars
 
+    @staticmethod
     def get_results(self):
         return self.results
 
+    @staticmethod
     def get_bg(self):
         return self.bg
 

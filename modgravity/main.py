@@ -19,7 +19,7 @@ def main():
     omega_m = .3
     omega_lambda = .7
     c = 299792.458  # km /s
-    P.alpha_lum_ratios(z_max)
+    P.alpha_lum_ratios(z_max, alpha, z_prime, h0, omega_m, omega_lambda)
 
 
 if __name__ == '__main__':
