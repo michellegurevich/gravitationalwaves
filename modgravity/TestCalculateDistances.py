@@ -3,6 +3,7 @@ import numpy as np
 from SetCosmology import SetCosmology
 from CalculateDistances import CalculateDistances
 
+
 class TestCalculateDistances(unittest.TestCase):
     SC = SetCosmology()
     CD = CalculateDistances()
@@ -17,6 +18,9 @@ class TestCalculateDistances(unittest.TestCase):
         self.assertEqual(self.SC.get_ld(self.z), self.CD.lum_dist(self.z_max, self.z_prime, self.h0, self.omega_m,
                                                                   self.omega_lambda))
 
+    def test_lum_dist_integrand(self):
+        self.assertEqual(self.SC.get_ld(self.z), self.CD.lum_dist(self.z_max, self.z_prime, self.h0, self.omega_m,
+                                                                  self.omega_lambda))
 
 if __name__ == '__main__':
     unittest.main()
