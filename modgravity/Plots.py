@@ -41,7 +41,7 @@ class Plots:
         alpha = 3
         eta_dsrt = 1 * 10e-35  # parameter of order of Planck length
         chi = CD.chi(z_max, m_g, E_e, 5, 10, 0, 0)
-        mod_chi = CD.chi(z_max, .0001, .001, 5, 10, alpha, eta_dsrt)
+        mod_chi = CD.chi(z_max, m_g, E_e, 5, 10, alpha, eta_dsrt)
 
         #plt.plot(chi / mod_chi, z)
         #plt.xlabel(r'$z$')

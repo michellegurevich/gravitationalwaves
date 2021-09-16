@@ -43,7 +43,7 @@ class CalculateDistances:
         def term_II(self, t_e, t_a, m_g):
             constant = 1/2 * m_g**2 / (a_t_e**2 * E_e**2)  # debugger value = 0.124999 (checked on wolfram)
             integral = quad(lambda t: 1 / (1 + (t * z_max)), t_e, t_a)
-            return constant * integral[0]  # debugger value = 0.02090780090565265
+            return constant * integral[0]  # debugger value = 4.882812499999999e-40
 
         def term_III(self, A_term, E_e, alpha):
             constant = 1/2 * A_term * (a_t_e * E_e)**(alpha-2)
