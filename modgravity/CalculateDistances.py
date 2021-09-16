@@ -46,8 +46,10 @@ class CalculateDistances:
             return constant * integral[0]  # debugger value = 0.02090780090565265
 
         def term_III(self, A_term, E_e, alpha):
-            return 0
+            constant = 1/2 * A_term * (a_t_e * E_e)**(alpha-2)
+            integral = quad(lambda t: (1 / (1 + (t * z_max)))**(1-alpha), t_e, t_a)
+            return constant * integral[0]
 
-        chi = term_I(self, z_max, t_e, t_a) - term_II(self, t_e, t_a, m_g)
+        chi = term_I(self, z_max, t_e, t_a) - term_II(self, t_e, t_a, m_g) - term_III(self, A_term, E_e, alpha)
 
         return chi
