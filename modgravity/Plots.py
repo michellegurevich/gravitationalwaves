@@ -35,12 +35,12 @@ class Plots:
         return plt.show()
 
     # plot the ratio of conformal distance chi with and without modification terms
-    def chi_to_mod_chi_ratio(self, z, z_max):
+    def chi_to_mod_chi_ratio(self, z, z_max, m_g, E_e):
         CD = CalculateDistances()
 
         alpha = 3
         eta_dsrt = 1 * 10e-35  # parameter of order of Planck length
-        chi = CD.chi(z_max, .0001, .001, 5, 10, 0, 0)
+        chi = CD.chi(z_max, m_g, E_e, 5, 10, 0, 0)
         mod_chi = CD.chi(z_max, .0001, .001, 5, 10, alpha, eta_dsrt)
 
         #plt.plot(chi / mod_chi, z)

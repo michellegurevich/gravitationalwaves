@@ -30,8 +30,8 @@ def main():
     CD = CalculateDistances()
     # print(SC.get_ld(z) * (h0/(1+z_max)))
     # print(CD.lum_dist(z_max, z_prime, h0, omega_m, omega_lambda) * (h0/(1+z_max)))
-    print(CD.chi(z_max, m_g, E_e, 5, 10, 0, 0))
-    P.chi_to_mod_chi_ratio(z, z_max)
+    # print(CD.chi(z_max, m_g, E_e, 5, 10, 0, 0))
+    P.chi_to_mod_chi_ratio(z, z_max, m_g, E_e)
 
 if __name__ == '__main__':
     main()
