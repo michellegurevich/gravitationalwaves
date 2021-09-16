@@ -50,6 +50,5 @@ class CalculateDistances:
             integral = quad(lambda t: (1 / (1 + (t * z_max)))**(1-alpha), t_e, t_a)
             return constant * integral[0]
 
-        chi = term_I(self, z_max, t_e, t_a) - term_II(self, t_e, t_a, m_g) - term_III(self, A_term, E_e, alpha)
+        return term_I(self, z_max, t_e, t_a) - term_II(self, t_e, t_a, m_g) - term_III(self, A_term, E_e, alpha)
 
-        return chi

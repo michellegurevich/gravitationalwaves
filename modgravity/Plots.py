@@ -35,6 +35,19 @@ class Plots:
         return plt.show()
 
     # plot the ratio of conformal distance chi with and without modification terms
-    def chi_to_mod_chi_ratio(self, *args):
+    def chi_to_mod_chi_ratio(self, z, z_max):
+        CD = CalculateDistances()
 
-        return 0 #plt.show
+        alpha = 3
+        eta_dsrt = 1 * 10e-35  # parameter of order of Planck length
+        chi = CD.chi(z_max, .0001, .001, 5, 10, 0, 0)
+        mod_chi = CD.chi(z_max, .0001, .001, 5, 10, alpha, eta_dsrt)
+
+        #plt.plot(chi / mod_chi, z)
+        #plt.xlabel(r'$z$')
+        #plt.ylabel(r'$\chi$ / modified $\chi$')
+        #plt.title('Ratio of standard to modified conformal distance in Double Special Relativity')
+
+        print(chi, mod_chi)
+
+        return 0#plt.show
