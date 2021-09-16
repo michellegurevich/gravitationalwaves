@@ -32,19 +32,22 @@ class CalculateDistances:
         return constant_term * integral
 
     def chi(self, z_max, m_g, E_e, t_e, t_a, alpha, A_term):
-        a_t = 1 / (1 + z_max)
+        a_t_e = 1 / (1 + z_max)  # z_max corresponds to the redshift at t_e
+        # a(t_e) = a(t) evaluated at t = t_e
+        # given z := a0 (=1) / a(t_e) - 1 = 1 / a(t_e) - 1 => 1 / (z + 1) = a(t_e)
 
-        def term_I(self, t_e, t_a):
+        def term_I(self, z_max, t_e, t_a):
             # a(t) = 1 / (1 + z) => 1 / a(t) = 1 + z
-            f = lambda t: 1 / a_t
-            return quad(f, t_e, t_a)
+            return quad(lambda t: 1 + t * z_max, t_e, t_a)[0]
 
-        def term_II(self, a, t_e, t_a, m_g):
+        def term_II(self, t_e, t_a, m_g):
+            constant = 1/2 * m_g**2 / (a_t_e**2 * E_e**2)  # debugger value = 0.124999 (checked on wolfram)
+            integral = quad(lambda t: 1 / (1 + (t * z_max)), t_e, t_a)
+            return constant * integral[0]  # debugger value = 0.02090780090565265
+
+        def term_III(self, A_term, E_e, alpha):
             return 0
 
-        def term_III(self, A_term, a, E_e, alpha):
-            return 0
-
-        chi = term_I(self, t_e, t_a)
+        chi = term_I(self, z_max, t_e, t_a) - term_II(self, t_e, t_a, m_g)
 
         return chi
