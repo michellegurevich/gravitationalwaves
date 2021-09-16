@@ -33,3 +33,8 @@ class Plots:
         plt.ylabel(r'$D_{\alpha} / D_L {Mpc}$')
         plt.title('Ratio of alpha to standard luminosity distances')
         return plt.show()
+
+    # plot the ratio of conformal distance chi with and without modification terms
+    def chi_to_mod_chi_ratio(self, *args):
+
+        return 0 #plt.show
