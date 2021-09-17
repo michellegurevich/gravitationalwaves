@@ -11,10 +11,20 @@ class CalculateDistances:
 
         integral = quad(lambda z_prime: 1 / np.sqrt(omega_m * (1 + z_prime) ** 3 + omega_lambda), z[0], z[len(z)-1])
         constant_term = c * (1 + z[len(z)-1]) / h0  # FROM eqn (2) THERE IS FACTOR OF POWERS OF C IN ENERGY TERM
-        return constant_term * integral[0]  # graviton travels from source to observer
+        return constant_term * integral[0]
+
+    def lum_dist_array(self, z_max, z, h0, omega_m, omega_lambda):
+        step = z_max / len(z)
+        return np.array([self.lum_dist(np.linspace(0, z), h0, omega_m, omega_lambda) for z in np.arange(0, z_max, step)])
 
     def alpha_dist(self, a, z_max, z_prime, h0, omega_m, omega_lambda):
-        def integrand(z_prime, alpha):
+        c = 299792.458  # km /s
+
+        integral = quad(lambda z_prime: 1 / np.sqrt(omega_m * (1 + z_prime) ** 3 + omega_lambda), z[0], z[len(z) - 1])
+        constant_term = c * (1 + z[len(z) - 1]) / h0  # FROM eqn (2) THERE IS FACTOR OF POWERS OF C IN ENERGY TERM
+        return constant_term * integral[0]
+
+        ef integrand(z_prime, alpha):
             n = np.array(range(0, 50))  # controls number of points integrand is evaluated at
             term = omega_m * (1 + n * z_prime) ** 3 + omega_lambda
             return ((1 + z_prime) ** (alpha - 2)) / np.sqrt(term)
