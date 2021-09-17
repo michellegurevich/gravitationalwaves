@@ -12,13 +12,13 @@ def main():
     SC = SetCosmology()
     # print(SC.get_ld(z))
     P = Plots()
-    # P.scale_factor(z)
+    #P.scale_factor(z)
 
     h0 = 72  # Hubble parameter today in km/s/Mpc
     omega_m = .3
     omega_lambda = .7
     c = 299792.458  # km /s
-    # P.alpha_lum_ratios(z_max, z_prime, h0, omega_m, omega_lambda)
+    #P.alpha_lum_ratios(z_max, z_prime, h0, omega_m, omega_lambda)
 
     h = 1
     f_e = 10**4  # Hz
@@ -28,10 +28,11 @@ def main():
 
     # try to compute integrands of lum distance from camb and own code to compare
     CD = CalculateDistances()
-    # print(SC.get_ld(z) * (h0/(1+z_max)))
-    # print(CD.lum_dist(z_max, z_prime, h0, omega_m, omega_lambda) * (h0/(1+z_max)))
+    print(SC.get_ld(z))
+    print(CD.lum_dist(z, h0, omega_m, omega_lambda))
     # print(CD.chi(z_max, m_g, E_e, 5, 10, 0, 0))
-    P.chi_to_mod_chi_ratio(z, z_max, m_g, E_e)
+    # P.chi_to_mod_chi_ratio(z, z_max, m_g, E_e)
+
 
 if __name__ == '__main__':
     main()

@@ -24,7 +24,7 @@ class TestCalculateDistances(unittest.TestCase):
         self.assertEqual(self.SC.get_ld(self.z), self.CD.lum_dist(self.z_max, self.z_prime, self.h0, self.omega_m,
                                                                   self.omega_lambda))
 
-    def test_chi_term_I(self):
+    def test_chi(self):
         # m_g = .0001, E_e = .001, and modification terms are both 0
         self.assertEqual(self.CD.chi(self.z_max, .0001, .001, self.t_e, self.t_a, 0, 0), 154.97909219909434)
 
