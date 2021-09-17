@@ -7,11 +7,10 @@ from sympy import lambdify
 class CalculateDistances:
 
     def lum_dist(self, z, h0, omega_m, omega_lambda):
-        integral = quad(lambda z_prime: 1 / np.sqrt(omega_m * (1 + z_prime) ** 3 + omega_lambda), z[0], z[len(z)-1])
         c = 299792.458  # km /s
-        constant_term = c * (1 + 4) / h0  # FROM eqn (2) THERE IS FACTOR OF POWERS OF C IN ENERGY TERM
-        # constant_term = (1 + z_max) / h0
 
+        integral = quad(lambda z_prime: 1 / np.sqrt(omega_m * (1 + z_prime) ** 3 + omega_lambda), z[0], z[len(z)-1])
+        constant_term = c * (1 + z[len(z)-1]) / h0  # FROM eqn (2) THERE IS FACTOR OF POWERS OF C IN ENERGY TERM
         return constant_term * integral[0]  # graviton travels from source to observer
 
     def alpha_dist(self, a, z_max, z_prime, h0, omega_m, omega_lambda):
