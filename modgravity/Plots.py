@@ -7,8 +7,12 @@ from SetCosmology import SetCosmology
 
 class Plots:
 
+    def __init__(self):
+        pass
+
     # plot scale factor against redshift
-    def scale_factor(self, z):
+    @staticmethod
+    def scale_factor(z):
         SC = SetCosmology()
         hp = SC.get_hp(z)
         plt.plot(z, hp)
@@ -18,7 +22,8 @@ class Plots:
         return plt.show()
 
     # plot ratios of (modified) alpha and (standard) luminosity distances against redshift
-    def alpha_lum_ratios(self, z_max, z_prime, h0, omega_m, omega_lambda):
+    @staticmethod
+    def alpha_lum_ratios(z_max, z_prime, h0, omega_m, omega_lambda):
         results = []
         CD = CalculateDistances()
 
@@ -35,7 +40,8 @@ class Plots:
         return plt.show()
 
     # plot the ratio of conformal distance chi with and without modification terms
-    def chi_to_mod_chi_ratio(self, z, z_max, m_g, E_e):
+    @staticmethod
+    def chi_to_mod_chi_ratio(z_max, m_g, E_e):
         CD = CalculateDistances()
 
         alpha = 3
@@ -43,11 +49,11 @@ class Plots:
         chi = CD.chi(z_max, m_g, E_e, 5, 10, 0, 0)
         mod_chi = CD.chi(z_max, m_g, E_e, 5, 10, alpha, eta_dsrt)
 
-        #plt.plot(chi / mod_chi, z)
-        #plt.xlabel(r'$z$')
-        #plt.ylabel(r'$\chi$ / modified $\chi$')
-        #plt.title('Ratio of standard to modified conformal distance in Double Special Relativity')
+        # plt.plot(chi / mod_chi, z)
+        # plt.xlabel(r'$z$')
+        # plt.ylabel(r'$\chi$ / modified $\chi$')
+        # plt.title('Ratio of standard to modified conformal distance in Double Special Relativity')
 
         print(chi, mod_chi)
 
-        return 0#plt.show
+        return 0  # plt.show

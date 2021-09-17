@@ -30,5 +30,6 @@ class TestCalculateDistances(unittest.TestCase):
         # m_g = .0001, E_e = .001, and modification terms are both 0
         self.assertEqual(self.CD.chi(self.z_max, .0001, .001, self.t_e, self.t_a, 0, 0), 154.97909219909434)
 
+
 if __name__ == '__main__':
     unittest.main()
