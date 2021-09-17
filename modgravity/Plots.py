@@ -29,7 +29,7 @@ class Plots:
 
         alpha_values = np.arange(0, 4.5, .5)  # alpha values end at 4, per GR tests paper specs
         for a in alpha_values:
-            alpha_lum_ratio = (CD.alpha_dist(a, z_max, z_prime, h0, omega_m, omega_lambda)
+            alpha_lum_ratio = (CD.alpha_dist(z_max, z_prime, alpha, h0, omega_m, omega_lambda)
                                / CD.lum_dist(z_max, z_prime, h0, omega_m, omega_lambda))[1]
             results.append(alpha_lum_ratio)
 

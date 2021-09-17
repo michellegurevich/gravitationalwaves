@@ -13,6 +13,7 @@ def main():
     h0 = 72  # Hubble parameter today in km/s/Mpc
     omega_m = .3
     omega_lambda = .7
+    alpha = 3
 
     h = 1
     f_e = 10**4  # Hz
@@ -22,9 +23,11 @@ def main():
 
     CD = CalculateDistances()
     lum_dist = CD.lum_dist_array(z_max, z, h0, omega_m, omega_lambda)
-    alpha_dist = CD.alpha_dist(z_max, z, h0, omega_m, omega_lambda)
+    alpha_dist = CD.alpha_dist_array(z_max, z, alpha, h0, omega_m, omega_lambda)
     print(lum_dist, alpha_dist)
 
+    chi_e = CD.chi(z_max, m_g, E_e, 2, 10, 3, 10e-35)
+    print(chi_e)
 
 if __name__ == '__main__':
     main()

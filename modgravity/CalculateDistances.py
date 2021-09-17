@@ -22,13 +22,18 @@ class CalculateDistances:
         arr = np.array([self.lum_dist(np.linspace(0, z), h0, omega_m, omega_lambda) for z in np.arange(0, z_max, step)])
         return arr
 
-    def alpha_dist(self, alpha, z, h0, omega_m, omega_lambda):
+    def alpha_dist(self, z, alpha, h0, omega_m, omega_lambda):
         c = 299792.458  # km /s
 
         integrand = lambda z_prime: ((1 + z_prime) ** (alpha - 2)) / np.sqrt(omega_m * (1 + z_prime) ** 3 + omega_lambda)
         integral = quad(integrand, z[0], z[len(z) - 1])
         constant_term = c * (1 + z[len(z) - 1]) / h0  # FROM eqn (2) THERE IS FACTOR OF POWERS OF C IN ENERGY TERM
         return constant_term * integral[0]
+
+    def alpha_dist_array(self, z_max, z, alpha, h0, omega_m, omega_lambda):
+        step = z_max / len(z)
+        arr = np.array([self.alpha_dist(np.linspace(0, z), alpha, h0, omega_m, omega_lambda) for z in np.arange(0, z_max, step)])
+        return arr
 
     def chi(self, z_max, m_g, E_e, t_e, t_a, alpha, A_term):
         a_t_e = 1 / (1 + z_max)  # z_max corresponds to the redshift at t_e
