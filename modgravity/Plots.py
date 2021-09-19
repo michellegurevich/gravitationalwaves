@@ -23,20 +23,24 @@ class Plots:
 
     # plot ratios of (modified) alpha and (standard) luminosity distances against redshift
     @staticmethod
-    def alpha_lum_ratios(z_max, z_prime, h0, omega_m, omega_lambda):
+    def alpha_lum_ratios(z_max, z, h0, omega_m, omega_lambda):
         results = []
         CD = CalculateDistances()
 
         alpha_values = np.arange(0, 4.5, .5)  # alpha values end at 4, per GR tests paper specs
         for a in alpha_values:
-            alpha_lum_ratio = (CD.alpha_dist(z_max, z_prime, alpha, h0, omega_m, omega_lambda)
-                               / CD.lum_dist(z_max, z_prime, h0, omega_m, omega_lambda))[1]
-            results.append(alpha_lum_ratio)
+            lum_dist_array = CD.lum_dist_array(z_max, z, h0, omega_m, omega_lambda)
+            alpha_dist_array = CD.alpha_dist_array(z_max, z, a, h0, omega_m, omega_lambda)
+            results = np.divide(alpha_dist_array[1:], lum_dist_array[1:])  # division by zero error, skip first element
+            # results = np.insert(results, 0, 0, axis=None)
+            plt.plot(np.hstack(z[1:]), np.hstack(results), label=r'$\alpha$ = '+str(a))
 
-        plt.plot(np.hstack(alpha_values), np.hstack(results))
-        plt.xlabel(r'$\alpha$')
+        plt.xlabel(r'$z$')
         plt.ylabel(r'$D_{\alpha} / D_L {Mpc}$')
         plt.title('Ratio of alpha to standard luminosity distances')
+        # handles, labels = plt.gca().get_legend_handles_labels()
+        # plt.gca().legend(handles=handles[::-1], labels=labels[::-1])
+        plt.legend(fontsize='small')
         return plt.show()
 
     # plot the ratio of conformal distance chi with and without modification terms
