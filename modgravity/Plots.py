@@ -37,7 +37,7 @@ class Plots:
 
         plt.xlabel(r'$z$')
         plt.ylabel(r'$D_{\alpha} / D_L {Mpc}$')
-        plt.title('Ratio of alpha to standard luminosity distances')
+        plt.title('Comparison of modified luminosity distances')
         # handles, labels = plt.gca().get_legend_handles_labels()
         # plt.gca().legend(handles=handles[::-1], labels=labels[::-1])
         plt.legend(fontsize='small')
@@ -45,19 +45,17 @@ class Plots:
 
     # plot the ratio of conformal distance chi with and without modification terms
     @staticmethod
-    def chi_to_mod_chi_ratio(z_max, m_g, E_e):
+    def chi_to_mod_chi_ratio(z, m_g, E_e):
         CD = CalculateDistances()
 
         alpha = 3
         eta_dsrt = 1 * 10e-35  # parameter of order of Planck length
-        chi = CD.chi(z_max, m_g, E_e, 5, 10, 0, 0)
-        mod_chi = CD.chi(z_max, m_g, E_e, 5, 10, alpha, eta_dsrt)
-
-        # plt.plot(chi / mod_chi, z)
-        # plt.xlabel(r'$z$')
-        # plt.ylabel(r'$\chi$ / modified $\chi$')
-        # plt.title('Ratio of standard to modified conformal distance in Double Special Relativity')
-
+        chi = CD.chi_array(z, m_g, E_e, 2, 10, 0, 0)
+        mod_chi = CD.chi_array(z, m_g, E_e, 2, 10, alpha, 2)
         print(chi, mod_chi)
 
-        return 0  # plt.show
+        plt.plot(z, chi / mod_chi)
+        plt.xlabel(r'$z$')
+        plt.ylabel(r'$\chi$ / modified $\chi$')
+        plt.title('Ratio of standard to modified conformal distance for 'r'$\alpha$'' = 3, A = 2') # Double Special Relativity')
+        return plt.show()

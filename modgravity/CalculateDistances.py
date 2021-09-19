@@ -19,7 +19,8 @@ class CalculateDistances:
 
     def lum_dist_array(self, z_max, z, h0, omega_m, omega_lambda):
         step = z_max / len(z)
-        arr = np.array([self.lum_dist(np.linspace(0, z), h0, omega_m, omega_lambda) for z in np.arange(0, z_max, step)])
+        z_values = np.arange(0, z_max, step)
+        arr = np.array([self.lum_dist(np.linspace(0, z), h0, omega_m, omega_lambda) for z in z_values])
         return arr
 
     def alpha_dist(self, z, alpha, h0, omega_m, omega_lambda):
@@ -32,7 +33,8 @@ class CalculateDistances:
 
     def alpha_dist_array(self, z_max, z, alpha, h0, omega_m, omega_lambda):
         step = z_max / len(z)
-        arr = np.array([self.alpha_dist(np.linspace(0, z), alpha, h0, omega_m, omega_lambda) for z in np.arange(0, z_max, step)])
+        z_values = np.arange(0, z_max, step)
+        arr = np.array([self.alpha_dist(np.linspace(0, z), alpha, h0, omega_m, omega_lambda) for z in z_values])
         return arr
 
     def chi(self, z_max, m_g, E_e, t_e, t_a, alpha, A_term):
@@ -56,3 +58,8 @@ class CalculateDistances:
 
         return term_I(z_max, t_e, t_a) - term_II(t_e, t_a, m_g) - term_III(A_term, E_e, alpha)
 
+    def chi_array(self, z, m_g, E_e, t_e, t_a, alpha, A_term):
+        step = z[len(z)-1] / len(z)
+        z_values = np.arange(0, z[len(z)-1], step)
+        arr = np.array([self.chi(i, m_g, E_e, t_e, t_a, alpha, A_term) for i in z_values])
+        return arr

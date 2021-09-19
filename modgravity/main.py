@@ -26,12 +26,12 @@ def main():
     # alpha_dist = CD.alpha_dist_array(z_max, z, 3, h0, omega_m, omega_lambda)
     # print(lum_dist, alpha_dist)
 
-    chi_e = CD.chi(z_max, m_g, E_e, 2, 10, 3, 10e-35)
-    print(chi_e)
-
     P = Plots()
     # P.scale_factor(z)
-    P.alpha_lum_ratios(z_max, z, h0, omega_m, omega_lambda)
+    # P.alpha_lum_ratios(z_max, z, h0, omega_m, omega_lambda)
+    chi_array = CD.chi_array(z, m_g, E_e, 2, 10, 3, 10e-35)
+    # print(chi_array)
+    P.chi_to_mod_chi_ratio(z, m_g, E_e)
 
 if __name__ == '__main__':
     main()
