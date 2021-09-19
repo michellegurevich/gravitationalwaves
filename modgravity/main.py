@@ -29,5 +29,8 @@ def main():
     chi_e = CD.chi(z_max, m_g, E_e, 2, 10, 3, 10e-35)
     print(chi_e)
 
+    P = Plots()
+    P.scale_factor(z)
+
 if __name__ == '__main__':
     main()
