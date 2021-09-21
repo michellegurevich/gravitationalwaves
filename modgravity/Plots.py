@@ -49,13 +49,15 @@ class Plots:
         CD = CalculateDistances()
 
         alpha = 3
+        A = .002
         eta_dsrt = 1 * 10e-35  # parameter of order of Planck length
         chi = CD.chi_array(z, m_g, E_e, 2, 10, 0, 0)
-        mod_chi = CD.chi_array(z, m_g, E_e, 2, 10, alpha, 2)
+        mod_chi = CD.chi_array(z, m_g, E_e, 2, 10, alpha, .00002)
         print(chi, mod_chi)
 
         plt.plot(z, chi / mod_chi)
         plt.xlabel(r'$z$')
-        plt.ylabel(r'$\chi$ / modified $\chi$')
-        plt.title('Ratio of standard to modified conformal distance for 'r'$\alpha$'' = 3, A = 2') # Double Special Relativity')
+        plt.ylabel(r'$\chi_{e | A,\alpha=0} / \chi_e$')
+        plt.title('Ratio of standard to modified conformal distance for 'r'$\alpha$'' = '
+                  + str(alpha) + ', A = ' + str(A))  # Double Special Relativity')
         return plt.show()

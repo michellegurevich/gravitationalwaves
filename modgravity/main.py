@@ -29,8 +29,6 @@ def main():
     P = Plots()
     # P.scale_factor(z)
     # P.alpha_lum_ratios(z_max, z, h0, omega_m, omega_lambda)
-    chi_array = CD.chi_array(z, m_g, E_e, 2, 10, 3, 10e-35)
-    # print(chi_array)
     P.chi_to_mod_chi_ratio(z, m_g, E_e)
 
 if __name__ == '__main__':

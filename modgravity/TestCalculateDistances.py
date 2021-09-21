@@ -8,9 +8,10 @@ from CalculateDistances import CalculateDistances
 class TestCalculateDistances(unittest.TestCase):
     SC = SetCosmology()
     CD = CalculateDistances()
+
     z_max = 4
     z = np.linspace(0, z_max)
-    z_prime = np.linspace(0, z_max).reshape(-1, 1)
+
     h0 = 72  # Hubble parameter today in km/s/Mpc
     omega_m = .3
     omega_lambda = .7
