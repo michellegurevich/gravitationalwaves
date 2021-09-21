@@ -28,8 +28,8 @@ def main():
 
     P = Plots()
     # P.scale_factor(z)
-    # P.alpha_lum_ratios(z_max, z, h0, omega_m, omega_lambda)
-    P.chi_to_mod_chi_ratio(z, m_g, E_e)
+    P.alpha_lum_ratios(z_max, z, h0, omega_m, omega_lambda)
+    # P.chi_to_mod_chi_ratio(z, m_g, E_e)
 
 if __name__ == '__main__':
     main()
