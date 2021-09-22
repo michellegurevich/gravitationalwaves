@@ -5,41 +5,44 @@ from sympy import lambdify
 
 
 class CalculateDistances:
+    h0 = 72
+    omega_m = .3
+    omega_lambda = .7
 
     def __init__(self):
         pass
 
     @classmethod
-    def lum_dist(cls, z, h0, omega_m, omega_lambda):
+    def lum_dist(cls, z):
         c = 299792.458  # km /s
 
-        integrand = lambda z_prime: 1 / np.sqrt(omega_m * (1 + z_prime) ** 3 + omega_lambda)
+        integrand = lambda z_prime: 1 / np.sqrt(cls.omega_m * (1 + z_prime) ** 3 + cls.omega_lambda)
         integral = quad(integrand, z[0], z[len(z) - 1])
-        constant_term = c * (1 + z[len(z) - 1]) / h0  # FROM eqn (2) THERE IS FACTOR OF POWERS OF C IN ENERGY TERM
+        constant_term = c * (1 + z[len(z) - 1]) / cls.h0  # FROM eqn (2) THERE IS FACTOR OF POWERS OF C IN ENERGY TERM
         return constant_term * integral[0]
 
     @classmethod
-    def lum_dist_array(cls, z_max, z, h0, omega_m, omega_lambda):
+    def lum_dist_array(cls, z_max, z):
         step = z_max / len(z)
         z_values = np.arange(0, z_max, step)
-        arr = np.array([cls.lum_dist(np.linspace(0, z), h0, omega_m, omega_lambda) for z in z_values])
+        arr = np.array([cls.lum_dist(np.linspace(0, z)) for z in z_values])
         return arr
 
     @classmethod
-    def alpha_dist(cls, z, alpha, h0, omega_m, omega_lambda):
+    def alpha_dist(cls, z, alpha):
         c = 299792.458  # km /s
 
-        integrand = lambda z_prime: ((1 + z_prime) ** (alpha - 2)) / np.sqrt(
-            omega_m * (1 + z_prime) ** 3 + omega_lambda)
+        integrand = lambda z_prime: ((1 + z_prime) ** (alpha - 2)) / np.sqrt(cls.omega_m * (1 + z_prime) ** 3
+                                                                             + cls.omega_lambda)
         integral = quad(integrand, z[0], z[len(z) - 1])
-        constant_term = c * (1 + z[len(z) - 1]) / h0  # FROM eqn (2) THERE IS FACTOR OF POWERS OF C IN ENERGY TERM
+        constant_term = c * (1 + z[len(z) - 1]) / cls.h0  # FROM eqn (2) THERE IS FACTOR OF POWERS OF C IN ENERGY TERM
         return constant_term * integral[0]
 
     @classmethod
-    def alpha_dist_array(cls, z_max, z, alpha, h0, omega_m, omega_lambda):
+    def alpha_dist_array(cls, z_max, z, alpha):
         step = z_max / len(z)
         z_values = np.arange(0, z_max, step)
-        arr = np.array([cls.alpha_dist(np.linspace(0, z), alpha, h0, omega_m, omega_lambda) for z in z_values])
+        arr = np.array([cls.alpha_dist(np.linspace(0, z), alpha) for z in z_values])
         return arr
 
     @classmethod

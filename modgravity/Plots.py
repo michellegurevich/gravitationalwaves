@@ -23,14 +23,14 @@ class Plots:
 
     # plot ratios of (modified) alpha and (standard) luminosity distances against redshift
     @staticmethod
-    def alpha_lum_ratios(z_max, z, h0, omega_m, omega_lambda):
+    def alpha_lum_ratios(z_max, z):
         results = []
         CD = CalculateDistances()
 
         alpha_values = np.arange(0, 4.5, .5)  # alpha values end at 4, per GR tests paper specs
         for a in alpha_values:
-            lum_dist_array = CD.lum_dist_array(z_max, z, h0, omega_m, omega_lambda)
-            alpha_dist_array = CD.alpha_dist_array(z_max, z, a, h0, omega_m, omega_lambda)
+            lum_dist_array = CD.lum_dist_array(z_max, z)
+            alpha_dist_array = CD.alpha_dist_array(z_max, z, a)
             results = np.divide(alpha_dist_array[1:], lum_dist_array[1:])  # division by zero error, skip first element
             # results = np.insert(results, 0, 0, axis=None)
             plt.plot(np.hstack(z[1:]), np.hstack(results), label=r'$\alpha$ = '+str(a))
