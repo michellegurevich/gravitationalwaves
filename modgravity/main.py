@@ -13,13 +13,15 @@ def main():
     h0 = 72  # Hubble parameter today in km/s/Mpc
     omega_m = .3
     omega_lambda = .7
-    # alpha = 3
+    alpha = 3
+    A_term = .0001
 
     h = 1
     f_e = 10**4  # Hz
     l_g = 1.6*10**16  # m
     E_e = h * f_e
     m_g = h / l_g
+    lambda_A_term = h * A_term ** (1 / (alpha - 2))  # always has units of length irrespective of alpha value
 
     CD = CalculateDistances()
     # lum_dist = CD.lum_dist_array(z_max, z, h0, omega_m, omega_lambda)
