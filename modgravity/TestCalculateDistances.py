@@ -11,10 +11,6 @@ class TestCalculateDistances(unittest.TestCase):
 
     z_max = 4
     z = np.linspace(0, z_max)
-
-    h0 = 72  # Hubble parameter today in km/s/Mpc
-    omega_m = .3
-    omega_lambda = .7
     t_e = 5
     t_a = 10
 
@@ -22,7 +18,7 @@ class TestCalculateDistances(unittest.TestCase):
         # iterates through luminosity distance np arrays for a given redshift from camb and my code and returns true if
         # each set of corresponding elements (i.e. each set of luminosity distances) agrees within a specified relative
         # tolerance
-        mine = self.CD.lum_dist_array(self.z_max, self.z, self.h0, self.omega_m, self.omega_lambda)
+        mine = self.CD.lum_dist_array(self.z_max, self.z)
         cambs = self.SC.get_ld(self.z)
         for element in range(len(mine)):
             self.assertTrue(math.isclose(mine[element], cambs[element], rel_tol=.1))

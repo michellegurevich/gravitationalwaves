@@ -34,11 +34,11 @@ def main():
 
     P = Plots()
     # P.scale_factor(z)
-    P.alpha_lum_ratios(z_max, z)
+    # P.alpha_lum_ratios(z_max, z)
     # P.chi_to_mod_chi_ratio(z, m_g, E_e)
 
     MP = ModifiedPolarization()
-    MP.delta_psi(alpha, chirp_mass, z, f)
+    print(MP.delta_psi(alpha, A_term, chirp_mass, z, f))
 
 if __name__ == '__main__':
     main()
