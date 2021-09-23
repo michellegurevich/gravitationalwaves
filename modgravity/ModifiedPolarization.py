@@ -1,4 +1,5 @@
 import math
+import cmath
 from CalculateDistances import CalculateDistances
 
 
@@ -84,5 +85,5 @@ class ModifiedPolarization:
     @classmethod
     def mod_polarization(cls, f, f_max, chirp_mass, z, alpha, A_term):
         # needs test to check f > 0
-        return cls.mod_amplitude(chirp_mass, z, f) * math.exp(1j * cls.psi(alpha, A_term, chirp_mass, z, f)) if \
-            f < f_max else 0
+        return cls.mod_amplitude(chirp_mass, z, f) * \
+               cmath.exp(1j * cls.psi(alpha, A_term, chirp_mass, z, f)[len(z)-1]) if f < f_max else 0
