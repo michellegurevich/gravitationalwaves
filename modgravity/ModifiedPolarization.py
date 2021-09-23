@@ -1,5 +1,7 @@
 import math
 import cmath
+import numpy as np
+
 from CalculateDistances import CalculateDistances
 
 
@@ -63,18 +65,18 @@ class ModifiedPolarization:
     def curved_A(cls, chirp_mass, z):
         CD = CalculateDistances()
         D_L = CD.lum_dist(z)
-        return math.sqrt(math.pi/30) * (chirp_mass ** 2 / D_L)
+        return math.sqrt(math.pi / 30) * (chirp_mass ** 2 / D_L)
 
     @classmethod
     def mod_amplitude(cls, chirp_mass, z, f):
         """ tilde A(f) term """
-        return cls.epsilon * cls.curved_A(chirp_mass, z) * (cls.u(chirp_mass, f) ** (-7/6))
+        return cls.epsilon * cls.curved_A(chirp_mass, z) * (cls.u(chirp_mass, f) ** (-7 / 6))
 
     @classmethod
     def psi_gr(cls, f, chirp_mass):  # , t_c, phi_c):
         freq_term = 2 * math.pi * f * cls.t_c
-        numerical_term = 3 / 128 * (cls.u(chirp_mass, f) ** -5/3)  # ADD CROSS PRODUCT
-        return freq_term - cls.phi_c - math.pi/4 + numerical_term
+        numerical_term = 3 / 128 * (cls.u(chirp_mass, f) ** -5 / 3)  # ADD CROSS PRODUCT
+        return freq_term - cls.phi_c - math.pi / 4 + numerical_term
 
     @classmethod
     def psi(cls, alpha, A_term, chirp_mass, z, f):
@@ -83,7 +85,15 @@ class ModifiedPolarization:
         return psi_gr + delta_psi
 
     @classmethod
-    def mod_polarization(cls, f, f_max, chirp_mass, z, alpha, A_term):
+    def mod_polarization_log(cls, f, f_max, chirp_mass, z, alpha, A_term):
+        ''' RETURNS LOG of VALUE for PLOT '''
         # needs test to check f > 0
-        return cls.mod_amplitude(chirp_mass, z, f) * \
-               cmath.exp(1j * cls.psi(alpha, A_term, chirp_mass, z, f)[len(z)-1]) if f < f_max else 0
+        return cmath.log(cls.mod_amplitude(chirp_mass, z, f) * \
+               cmath.exp(1j * cls.psi(alpha, A_term, chirp_mass, z, f)[len(z) - 1])) if f < f_max else 0
+
+    @classmethod
+    def mod_polarization_array(cls, f, f_max, chirp_mass, z, alpha, A_term):
+        step = z[len(z) - 1] / len(z)
+        z_values = np.arange(0, z[len(z) - 1], step)
+        arr = np.array([cls.mod_polarization_log(f, f_max, chirp_mass, z, alpha, A_term) for i in z_values])
+        return arr
