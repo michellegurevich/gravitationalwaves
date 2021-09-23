@@ -1,6 +1,7 @@
 from matplotlib import pyplot as plt
 import numpy as np
 import cmath
+import math
 
 from CalculateDistances import CalculateDistances
 from SetCosmology import SetCosmology
@@ -68,12 +69,14 @@ class Plots:
     def modified_polarization(z, f, f_max, chirp_mass, alpha, A_term):
         """ plot the modified polarization, h~(f), in frequency space against redshift """
         MP = ModifiedPolarization()
-        h_tilde = MP.mod_polarization_array(f, f_max, chirp_mass, z, alpha, A_term)
+        h_tilde_real, h_tilde_imag = MP.mod_polarization_array(f, f_max, chirp_mass, z, alpha, A_term)
         """ f_em / f_obs = 1 + z => f (measured as defined in paper, aka f_obs) => define array of frequency values 
         spanning the expected range for LISA """
         f_obs = np.linspace(10e-5, 10e-1, num=50)
-        plt.plot(np.log(f_obs), h_tilde)  # DOES NOT PLOT THE COMPLEX PART OF ARRAY
-        plt.xlabel('$f$')
-        plt.ylabel('$h~(f)$')
+        #plt.plot(np.log(f_obs), np.cos(h_tilde_real))
+        plt.plot(np.log(f_obs), np.sin(h_tilde_imag))
+        #plt.plot(np.log(f_obs), np.cos(h_tilde_real) + 1j* np.sin(h_tilde_imag))
+        plt.xlabel('$lg(f)$')
+        plt.ylabel(r'$lg(~h)$')
         plt.title('Modified polarization in frequency space')
         return plt.show()

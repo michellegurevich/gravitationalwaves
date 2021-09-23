@@ -29,7 +29,7 @@ def main():
     MP = ModifiedPolarization()
     # print(MP.delta_psi(alpha, A_term, chirp_mass, z, f))
     # print(MP.mod_polarization(f, 10e-4, chirp_mass, z, alpha, A_term))  # f_max < f WORKS FINE (returns 0)
-    print(MP.mod_polarization_log(f, 10e-2, chirp_mass, z, alpha, A_term))  # f_max > f
+    # print(MP.mod_polarization_log(f, 10e-2, chirp_mass, z, alpha, A_term))  # f_max > f
     print(MP.mod_polarization_array(f, 10e-2, chirp_mass, z, alpha, A_term))
     P.modified_polarization(z, f, 10e-2, chirp_mass, alpha, A_term)
 

@@ -84,16 +84,17 @@ class ModifiedPolarization:
         delta_psi = cls.delta_psi(alpha, A_term, chirp_mass, z, f)
         return psi_gr + delta_psi
 
-    @classmethod
-    def mod_polarization_log(cls, f, f_max, chirp_mass, z, alpha, A_term):
-        ''' RETURNS LOG of VALUE for PLOT '''
-        # needs test to check f > 0
-        return cmath.log(cls.mod_amplitude(chirp_mass, z, f) * \
-               cmath.exp(1j * cls.psi(alpha, A_term, chirp_mass, z, f)[len(z) - 1])) if f < f_max else 0
+    # @classmethod
+    # def mod_polarization_log(cls, f, f_max, chirp_mass, z, i, alpha, A_term):
+    #     return h
 
     @classmethod
     def mod_polarization_array(cls, f, f_max, chirp_mass, z, alpha, A_term):
-        step = z[len(z) - 1] / len(z)
-        z_values = np.arange(0, z[len(z) - 1], step)
-        arr = np.array([cls.mod_polarization_log(f, f_max, chirp_mass, z, alpha, A_term) for i in z_values])
-        return arr
+        # returns LOG OF VALUE for plotting purposes
+        arr = []
+
+        for i in range(50):
+            h_tilde = cmath.log(cls.mod_amplitude(chirp_mass, z, f) *
+                                cmath.exp(1j * cls.psi(alpha, A_term, chirp_mass, z, f)[i])) if f < f_max else 0
+            arr.append(h_tilde)
+        return np.array(arr).real, np.array(arr).imag
