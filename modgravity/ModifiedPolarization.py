@@ -98,3 +98,29 @@ class ModifiedPolarization:
                                 cmath.exp(1j * cls.psi(alpha, A_term, chirp_mass, z, f)[i])) if f < f_max else 0
             arr.append(h_tilde)
         return np.array(arr).real, np.array(arr).imag
+
+    @classmethod
+    def chirp_mass_e(cls, chirp_mass, z):
+        """ M_e is the source chirp mass, related to measured chirp mass by the following """
+        return chirp_mass / (1 + z)
+
+    @classmethod
+    def m(cls, chirp_mass, z, m_1, m_2):
+        """ calculates symmetric mass ratio eta from source chirp mass and component masses, returns m """
+        M_e = cls.chirp_mass_e(chirp_mass, z)
+        eta = lambda ma, ss: (ma * ss) / (ma + ss)
+        return M_e / (eta(m_1, m_2)**(3/5))
+
+    @classmethod
+    def calculate_f_max(cls, z):
+        f_dot = cls.df_e_over_dt_e() / ((1 + z)**2)
+        # SOLVE f_dot the TOTAL derivative to optimize f, confirm it is a MAX
+        return 0
+
+    @classmethod
+    def df_e_over_dt_e(cls, chirp_mass, z, f_e):
+        M_e = cls.chirp_mass_e(chirp_mass, z)
+        factor = (96 / (5 * math.pi * M_e**2)) * (math.pi * M_e * f_e)**(11/3)
+        term_i = 0
+        term_ii = 0
+        return factor * (1 - term_i + 4 * math.pi * term_ii)
