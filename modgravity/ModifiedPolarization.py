@@ -109,7 +109,7 @@ class ModifiedPolarization:
         """ calculates symmetric mass ratio eta from source chirp mass and component masses, returns m """
         M_e = cls.chirp_mass_e(chirp_mass, z)
         eta = lambda ma, ss: (ma * ss) / (ma + ss)
-        return M_e / (eta(m_1, m_2)**(3/5))
+        return M_e / (eta(m_1, m_2)**(3/5)), eta(m_1, m_2)
 
     @classmethod
     def calculate_f_max(cls, z):
@@ -120,7 +120,9 @@ class ModifiedPolarization:
     @classmethod
     def df_e_over_dt_e(cls, chirp_mass, z, f_e):
         M_e = cls.chirp_mass_e(chirp_mass, z)
+        m, eta = m(chirp_mass, z, m_1, m_2)
         factor = (96 / (5 * math.pi * M_e**2)) * (math.pi * M_e * f_e)**(11/3)
-        term_i = 0
-        term_ii = 0
+        # verify in debuger that eta is calc as expected
+        term_ii = math.pi * m * f_e
+        term_i = (743/336 + 11/4 * eta) * (term_ii**(2/3))
         return factor * (1 - term_i + 4 * math.pi * term_ii)
