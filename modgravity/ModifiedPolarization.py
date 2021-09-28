@@ -111,10 +111,10 @@ class ModifiedPolarization:
         eta = lambda ma, ss: (ma * ss) / (ma + ss)
         return M_e / (eta(m_1, m_2)**(3/5)), eta(m_1, m_2)
 
+    """ do not calculate f_dot and set equal to zero to recover max value attained by f
     @classmethod
     def calculate_f_max(cls, z):
         f_dot = cls.df_e_over_dt_e() / ((1 + z)**2)
-        # SOLVE f_dot the TOTAL derivative to optimize f, confirm it is a MAX
         return 0
 
     @classmethod
@@ -126,3 +126,4 @@ class ModifiedPolarization:
         term_ii = math.pi * m * f_e
         term_i = (743/336 + 11/4 * eta) * (term_ii**(2/3))
         return factor * (1 - term_i + 4 * math.pi * term_ii)
+    """
