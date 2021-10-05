@@ -111,6 +111,32 @@ class ModifiedPolarization:
         eta = lambda ma, ss: (ma * ss) / (ma + ss)
         return M_e / (eta(m_1, m_2)**(3/5)), eta(m_1, m_2)
 
+    @classmethod
+    def v_lso(cls):
+        """ proportional to velocity at last stable orbit """
+        return 0
+
+    @classmethod
+    def psi_gr_numerical_coefficients(cls, chirp_mass, f, z, m_1, m_2):
+        v = cls.u(chirp_mass, f)
+        v_lso - cls.v_lso()
+        m, eta = m(chirp_mass, z, m_1, m_2)
+        gamma = .577216  # euler mascheroni constant (dimensionless)
+
+        v_2 = 20 / 9 * (743 / 336 + (11 / 4 * eta))
+        v_3 = 16 * math.pi
+        v_4 = 10 * (3058673 / 1016064 + (5329 / 1008 * eta) + (617 / 144 * eta**2))
+        v_5 = math.pi * (38645 / 756 - (65 / 9 * eta)) * (1 + 3 * math.ln(v / v_lso))
+        v_6 = (11583231236531 / 4694215680
+               - (640 / 3 * math.pi**2)
+               - (6848 * gamma / 21)
+               - (6848 / 21 * math.ln(4 * v))
+               + (-15737765635 / 3048192 + 2255 * (math.pi ** 2) / 12) * eta
+               + (76055/1728 * eta**2)
+               - (127825/1296 * eta**3))
+        v_7 = math.pi * (77096675 / 254016 + 378515 / 1512 * eta - 74045 / 756 * eta**2)
+        return (v_2 * v**2) - (v_3 * v**3) + (v_4 * v**4) + (v_5 * v**5) + (v_6 * v**6) + (v_7 * v**7)
+
     """ do not calculate f_dot and set equal to zero to recover max value attained by f
     @classmethod
     def calculate_f_max(cls, z):
@@ -122,7 +148,7 @@ class ModifiedPolarization:
         M_e = cls.chirp_mass_e(chirp_mass, z)
         m, eta = m(chirp_mass, z, m_1, m_2)
         factor = (96 / (5 * math.pi * M_e**2)) * (math.pi * M_e * f_e)**(11/3)
-        # verify in debuger that eta is calc as expected
+        # verify in debugger that eta is calc as expected
         term_ii = math.pi * m * f_e
         term_i = (743/336 + 11/4 * eta) * (term_ii**(2/3))
         return factor * (1 - term_i + 4 * math.pi * term_ii)

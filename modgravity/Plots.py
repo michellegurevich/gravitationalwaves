@@ -72,11 +72,11 @@ class Plots:
         h_tilde_real, h_tilde_imag = MP.mod_polarization_array(f, f_max, chirp_mass, z, alpha, A_term)
         """ f_em / f_obs = 1 + z => f (measured as defined in paper, aka f_obs) => define array of frequency values 
         spanning the expected range for LISA """
-        f_obs = np.linspace(10e-5, 10e-1, num=50)
-        #plt.plot(np.log(f_obs), np.cos(h_tilde_real))
-        plt.plot(np.log(f_obs), np.sin(h_tilde_imag))
-        #plt.plot(np.log(f_obs), np.cos(h_tilde_real) + 1j* np.sin(h_tilde_imag))
+        f_obs = np.linspace(10e-5, 10e-1)
+        # plt.plot(np.log(f_obs), np.cos(h_tilde_real))
+        # plt.plot(np.log(f_obs), np.sin(h_tilde_imag))
+        plt.plot(np.log(f_obs), np.cos(h_tilde_real) + np.sin(h_tilde_imag))
         plt.xlabel('$lg(f)$')
-        plt.ylabel(r'$lg(~h)$')
+        plt.ylabel(r'log($\tilde{h}$)')
         plt.title('Modified polarization in frequency space')
         return plt.show()
