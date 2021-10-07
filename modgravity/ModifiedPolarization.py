@@ -108,7 +108,7 @@ class ModifiedPolarization:
     def m(cls, chirp_mass, z, m_1, m_2):
         """ calculates symmetric mass ratio eta from source chirp mass and component masses, returns m """
         M_e = cls.chirp_mass_e(chirp_mass, z)
-        eta = lambda ma, ss: (ma * ss) / (ma + ss)
+        eta = lambda ma, ss: (ma * ss) / ((ma + ss)**2)
         return M_e / (eta(m_1, m_2)**(3/5)), eta(m_1, m_2)
 
     @classmethod
