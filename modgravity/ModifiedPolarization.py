@@ -84,10 +84,6 @@ class ModifiedPolarization:
         delta_psi = cls.delta_psi(alpha, A_term, chirp_mass, z, f)
         return psi_gr + delta_psi
 
-    # @classmethod
-    # def mod_polarization_log(cls, f, f_max, chirp_mass, z, i, alpha, A_term):
-    #     return h
-
     @classmethod
     def mod_polarization_array(cls, f, f_max, chirp_mass, z, alpha, A_term):
         # returns LOG OF VALUE for plotting purposes
@@ -106,10 +102,10 @@ class ModifiedPolarization:
 
     @classmethod
     def m(cls, chirp_mass, z, m_1, m_2):
-        """ calculates symmetric mass ratio eta from source chirp mass and component masses, returns m """
+        """ calculates symmetric mass ratio eta from source chirp mass and component masses; returns m and eta """
         M_e = cls.chirp_mass_e(chirp_mass, z)
-        eta = lambda ma, ss: (ma * ss) / ((ma + ss)**2)
-        return M_e / (eta(m_1, m_2)**(3/5)), eta(m_1, m_2)
+        eta = (m_1 * m_2) / ((m_1 + m_2) ** 2)
+        return M_e / (eta**(3/5)), eta
 
     @classmethod
     def v_lso(cls):
