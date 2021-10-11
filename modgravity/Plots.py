@@ -80,3 +80,15 @@ class Plots:
         plt.ylabel(r'log($\tilde{h}$)')
         plt.title('Modified polarization in frequency space')
         return plt.show()
+
+    @staticmethod
+    def standard_polarization(z, f, f_max, chirp_mass, m_1, m_2):
+        """ plot the standard polarization, h(f), in frequency and time """
+        MP = ModifiedPolarization()
+        h_real, h_imag = MP.std_polarization_array(f, f_max, chirp_mass, z, m_1, m_2)
+        f_obs = np.linspace(10e-5, 10e-1)
+        plt.plot(np.log(f_obs), np.cos(h_real) + np.sin(h_imag))
+        plt.xlabel('$lg(f)$')
+        plt.ylabel('$lg(h)$')
+        plt.title('Standard polarization in frequency space')
+        return plt.show()

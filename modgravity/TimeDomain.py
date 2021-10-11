@@ -52,18 +52,17 @@ class TimeDomain:
 
         # get phenomA in frequency domain
         hp, _ = waveform.get_fd_waveform(approximant='IMRPhenomA',
-                                                    mass1=65, mass2=80,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
-                                                    delta_f=1.0 / 4,
-                                                    f_lower=40)
+                                         mass1=65, mass2=80,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
+                                         delta_f=1.0 / 4, f_lower=40)
 
-        # FFT it to the time-domain
+        # perform ifft
         t_len = int(1.0 / delta_t / delta_f)
         hp.resize(t_len / 2 + 1)
         sp = types.TimeSeries(types.zeros(t_len), delta_t=delta_t)
         fft.ifft(hp, sp)
 
+        # plot strain
         plt.plot(sp.sample_times, sp, label='IMRPhenomA (IFFT)')
-
         plt.ylabel('Strain')
         plt.xlabel('Time (s)')
         plt.legend()

@@ -69,18 +69,19 @@ class ModifiedPolarization:
 
     @classmethod
     def mod_amplitude(cls, chirp_mass, z, f):
-        """ tilde A(f) term """
+        """ A~(f) term """
         return cls.epsilon * cls.curved_A(chirp_mass, z) * (cls.u(chirp_mass, f) ** (-7 / 6))
 
     @classmethod
-    def psi_gr(cls, f, chirp_mass):  # , t_c, phi_c):
+    def psi_gr(cls, f, chirp_mass, z, m_1, m_2):  # , t_c, phi_c):
         freq_term = 2 * math.pi * f * cls.t_c
-        numerical_term = 3 / 128 * (cls.u(chirp_mass, f) ** -5 / 3)  # ADD CROSS PRODUCT
+        table_coefficient_terms = cls.psi_gr_numerical_coefficients(chirp_mass, f, z, m_1, m_2)
+        numerical_term = 3 / 128 * (cls.u(chirp_mass, f) ** -5 / 3) + table_coefficient_terms
         return freq_term - cls.phi_c - math.pi / 4 + numerical_term
 
     @classmethod
-    def psi(cls, alpha, A_term, chirp_mass, z, f):
-        psi_gr = cls.psi_gr(f, chirp_mass)  # , t_c, phi_c)
+    def psi(cls, alpha, A_term, chirp_mass, z, f, m_1, m_2):
+        psi_gr = cls.psi_gr(f, chirp_mass, z, m_1, m_2)  # , t_c, phi_c)
         delta_psi = cls.delta_psi(alpha, A_term, chirp_mass, z, f)
         return psi_gr + delta_psi
 
@@ -91,7 +92,8 @@ class ModifiedPolarization:
 
         for i in range(50):
             h_tilde = cmath.log(cls.mod_amplitude(chirp_mass, z, f) *
-                                cmath.exp(1j * cls.psi(alpha, A_term, chirp_mass, z, f)[i])) if f < f_max else 0
+                                cmath.exp(1j * cls.psi(alpha, A_term, chirp_mass, z, f, m_1, m_2)[i])) \
+                if f < f_max else 0
             arr.append(h_tilde)
         return np.array(arr).real, np.array(arr).imag
 
@@ -132,6 +134,17 @@ class ModifiedPolarization:
                - (127825/1296 * eta**3))
         v_7 = math.pi * (77096675 / 254016 + 378515 / 1512 * eta - 74045 / 756 * eta**2)
         return (v_2 * v**2) - (v_3 * v**3) + (v_4 * v**4) + (v_5 * v**5) + (v_6 * v**6) + (v_7 * v**7)
+
+    @classmethod
+    def std_polarization_array(cls, f, f_max, chirp_mass, z, m_1, m_2):
+        # returns LOG OF VALUE for plotting purposes
+        arr = []
+
+        for i in range(50):
+            h = cmath.log(cls.curved_A(chirp_mass, z) * cmath.exp(1j * cls.psi_gr(f, chirp_mass, z, m_1, m_2)[i])) \
+                if f < f_max else 0
+            arr.append(h)
+        return np.array(arr).real, np.array(arr).imag
 
     """ do not calculate f_dot and set equal to zero to recover max value attained by f
     @classmethod
