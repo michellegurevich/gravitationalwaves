@@ -14,7 +14,7 @@ def main():
 
     alpha = 3
     A_term = .0001
-    chirp_mass = 25 * 2e30  # kg
+    chirp_mass = 25  # kg
     f = 10e-3  # Hz
 
     # CD = CalculateDistances()

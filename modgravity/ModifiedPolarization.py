@@ -87,9 +87,10 @@ class ModifiedPolarization:
 
     @classmethod
     def mod_polarization_array(cls, f, f_max, chirp_mass, z, alpha, A_term, m_1, m_2):
-        # returns LOG OF VALUE for plotting purposes
-        arr = []
+        """ assigns the LOG OF VALUE (for plotting purposes) of the product of modified amplitude and exp(i*psi) to an
+        array whose length corresponds to that of psi """
 
+        arr = []
         for i in range(50):
             h_tilde = cmath.log(cls.mod_amplitude(chirp_mass, z, f) *
                                 cmath.exp(1j * cls.psi(alpha, A_term, chirp_mass, z, f, m_1, m_2)[i])) \
@@ -134,16 +135,15 @@ class ModifiedPolarization:
                + (76055/1728 * eta**2)
                - (127825/1296 * eta**3))
         v_7 = math.pi * (77096675 / 254016 + 378515 / 1512 * eta - 74045 / 756 * eta**2)
+
         return (v_2 * v**2) - (v_3 * v**3) + (v_4 * v**4) + (v_5 * v**5) + (v_6 * v**6) + (v_7 * v**7)
 
     @classmethod
     def std_polarization_array(cls, f, f_max, chirp_mass, z, m_1, m_2):
-        # returns LOG OF VALUE for plotting purposes
         arr = []
 
         for i in range(50):
-            # assign the product of standard amplitude and exp(i*psi) at redshifts over constant interval of length 50
-            h = cmath.log(cls.curved_A(chirp_mass, z) * cmath.exp(1j * cls.psi_gr(f, chirp_mass, z, m_1, m_2)[i]))
+            h = cmath.log(cls.curved_A(chirp_mass, z) * cmath.exp(1j * cls.psi_gr(f, chirp_mass, z, m_1, m_2)))
             arr.append(h)
         return np.array(arr).real, np.array(arr).imag
 
