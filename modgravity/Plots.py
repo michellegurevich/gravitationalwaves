@@ -66,10 +66,10 @@ class Plots:
         return plt.show()
 
     @staticmethod
-    def modified_polarization(z, f, f_max, chirp_mass, alpha, A_term):
+    def modified_polarization(z, f, f_max, chirp_mass, alpha, A_term, m_1, m_2):
         """ plot the modified polarization, h~(f), in frequency space against redshift """
         MP = ModifiedPolarization()
-        h_tilde_real, h_tilde_imag = MP.mod_polarization_array(f, f_max, chirp_mass, z, alpha, A_term)
+        h_tilde_real, h_tilde_imag = MP.mod_polarization_array(f, f_max, chirp_mass, z, alpha, A_term, m_1, m_2)
         """ f_em / f_obs = 1 + z => f (measured as defined in paper, aka f_obs) => define array of frequency values 
         spanning the expected range for LISA """
         f_obs = np.linspace(10e-5, 10e-1)

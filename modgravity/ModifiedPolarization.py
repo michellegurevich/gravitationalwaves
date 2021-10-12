@@ -56,7 +56,7 @@ class ModifiedPolarization:
     def delta_psi(cls, alpha, A_term, chirp_mass, z, f):
         term_i = cls.beta(chirp_mass, z) / cls.u(chirp_mass, f)
         if alpha == 1:
-            term_ii = cls.zeta(z, alpha, A_term, chirp_mass) * math.ln(cls.u(chirp_mass, f))
+            term_ii = cls.zeta(z, alpha, A_term, chirp_mass) * math.log(cls.u(chirp_mass, f))
         else:
             term_ii = cls.zeta(z, alpha, A_term, chirp_mass) * (cls.u(chirp_mass, f) ** (alpha - 1))
         return -1 * (term_i + term_ii)
@@ -83,10 +83,10 @@ class ModifiedPolarization:
     def psi(cls, alpha, A_term, chirp_mass, z, f, m_1, m_2):
         psi_gr = cls.psi_gr(f, chirp_mass, z, m_1, m_2)  # , t_c, phi_c)
         delta_psi = cls.delta_psi(alpha, A_term, chirp_mass, z, f)
-        return psi_gr + delta_psi
+        return psi_gr + delta_psi  # double, np array
 
     @classmethod
-    def mod_polarization_array(cls, f, f_max, chirp_mass, z, alpha, A_term):
+    def mod_polarization_array(cls, f, f_max, chirp_mass, z, alpha, A_term, m_1, m_2):
         # returns LOG OF VALUE for plotting purposes
         arr = []
 
@@ -111,24 +111,25 @@ class ModifiedPolarization:
 
     @classmethod
     def v_lso(cls):
-        """ proportional to velocity at last stable orbit """
-        return 0
+        """ proportional to velocity at last stable orbit in the strongly relativistic regime (here we use the
+        Schwarzschild metric termination point) """
+        return 1 / math.sqrt(6)
 
     @classmethod
     def psi_gr_numerical_coefficients(cls, chirp_mass, f, z, m_1, m_2):
         v = cls.u(chirp_mass, f)
-        v_lso - cls.v_lso()
-        m, eta = m(chirp_mass, z, m_1, m_2)
+        v_lso = cls.v_lso()
+        m, eta = cls.m(chirp_mass, z, m_1, m_2)
         gamma = .577216  # euler mascheroni constant (dimensionless)
 
         v_2 = 20 / 9 * (743 / 336 + (11 / 4 * eta))
         v_3 = 16 * math.pi
         v_4 = 10 * (3058673 / 1016064 + (5329 / 1008 * eta) + (617 / 144 * eta**2))
-        v_5 = math.pi * (38645 / 756 - (65 / 9 * eta)) * (1 + 3 * math.ln(v / v_lso))
+        v_5 = math.pi * (38645 / 756 - (65 / 9 * eta)) * (1 + 3 * math.log(v / v_lso))
         v_6 = (11583231236531 / 4694215680
                - (640 / 3 * math.pi**2)
                - (6848 * gamma / 21)
-               - (6848 / 21 * math.ln(4 * v))
+               - (6848 / 21 * math.log(4 * v))
                + (-15737765635 / 3048192 + 2255 * (math.pi ** 2) / 12) * eta
                + (76055/1728 * eta**2)
                - (127825/1296 * eta**3))
@@ -141,8 +142,8 @@ class ModifiedPolarization:
         arr = []
 
         for i in range(50):
-            h = cmath.log(cls.curved_A(chirp_mass, z) * cmath.exp(1j * cls.psi_gr(f, chirp_mass, z, m_1, m_2)[i])) \
-                if f < f_max else 0
+            # assign the product of standard amplitude and exp(i*psi) at redshifts over constant interval of length 50
+            h = cmath.log(cls.curved_A(chirp_mass, z) * cmath.exp(1j * cls.psi_gr(f, chirp_mass, z, m_1, m_2)[i]))
             arr.append(h)
         return np.array(arr).real, np.array(arr).imag
 
