@@ -1,15 +1,15 @@
-import sys, platform, os
-import matplotlib
-from matplotlib import pyplot as plt
-import numpy as np
 import camb
-from camb import model, initialpower
-
-from pycbc.waveform import get_td_waveform, td_approximants, fd_approximants
-from pycbc import types, fft, waveform
-from scipy.signal import hilbert
-
+import matplotlib
+import numpy as np
+import os
+import platform
+import sys
 from ModifiedPolarization import ModifiedPolarization
+from camb import model, initialpower
+from matplotlib import pyplot as plt
+from pycbc import types, fft, waveform
+from pycbc.waveform import get_td_waveform, td_approximants, fd_approximants
+from scipy.signal import hilbert
 
 
 class TimeDomain:

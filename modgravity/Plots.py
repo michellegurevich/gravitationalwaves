@@ -52,10 +52,9 @@ class Plots:
         CD = CalculateDistances()
 
         alpha = 3
-        A = .002
         eta_dsrt = 1 * 10e-35  # parameter of order of Planck length
-        chi = CD.chi_array(z, m_g, E_e, 2, 10, 0, 0)
-        mod_chi = CD.chi_array(z, m_g, E_e, 2, 10, alpha, .00002)
+        chi = CD.chi_array(z_max, 0, 0, m_g, E_e)
+        mod_chi = CD.chi_array(z, alpha, .00002, m_g, E_e, 2, 10)
         print(chi, mod_chi)
 
         plt.plot(z, chi / mod_chi)
@@ -66,10 +65,10 @@ class Plots:
         return plt.show()
 
     @staticmethod
-    def modified_polarization(z, f, f_max, chirp_mass, alpha, A_term, m_1, m_2):
+    def modified_polarization(z, f, f_cut, alpha, A_term, chirp_mass, m_1, m_2):
         """ plot the modified polarization, h~(f), in frequency space against redshift """
         MP = ModifiedPolarization()
-        h_tilde_real, h_tilde_imag = MP.mod_polarization_array(f, f_max, chirp_mass, z, alpha, A_term, m_1, m_2)
+        h_tilde_real, h_tilde_imag = MP.mod_polarization_array(f, f_cut, z, alpha, A_term, chirp_mass, m_1, m_2)
         """ f_em / f_obs = 1 + z => f (measured as defined in paper, aka f_obs) => define array of frequency values 
         spanning the expected range for LISA """
         f_obs = np.linspace(10e-5, 10e-1)
@@ -82,10 +81,10 @@ class Plots:
         return plt.show()
 
     @staticmethod
-    def standard_polarization(z, f, f_max, chirp_mass, m_1, m_2):
+    def standard_polarization(z, f, chirp_mass, m_1, m_2):
         """ plot the standard polarization, h(f), in frequency and time """
         MP = ModifiedPolarization()
-        h_real, h_imag = MP.std_polarization_array(f, f_max, chirp_mass, z, m_1, m_2)
+        h_real, h_imag = MP.std_polarization_array(f, z, chirp_mass, m_1, m_2)
         f_obs = np.linspace(10e-5, 10e-1)
         plt.plot(np.log(f_obs), np.cos(h_real) + np.sin(h_imag))
         plt.xlabel('$lg(f)$')
