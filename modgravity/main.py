@@ -33,10 +33,12 @@ def main():
     # print(MP.mod_polarization_log(f, 10e-2, chirp_mass, z, alpha, A_term))  # f_max > f
     # print(MP.mod_polarization_array(f, 100, chirp_mass, z, alpha, A_term))
     # P.modified_polarization(z, f, 100, chirp_mass, alpha, A_term, 16, 15)
-    P.standard_polarization(z, f, 100, chirp_mass, 16, 15)
+    # P.standard_polarization(z, f, 100, chirp_mass, 16, 15)
 
     TD = TimeDomain
-    TD.plot_phenomA()
+    # TD.plot_IMRPhenomA()
+    TD.plot_TaylorF2()
+
 
 if __name__ == '__main__':
     main()

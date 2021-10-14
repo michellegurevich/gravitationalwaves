@@ -18,34 +18,30 @@ class TimeDomain:
         pass
 
     @classmethod
-    def plot_waveform(cls):
+    def plot_TaylorF2(cls):
         delta_t = 1.0 / 4096
         delta_f = 1.0 / 4
 
-        # Get a frequency domain waveform
-        sptilde, sctilde = waveform.get_fd_waveform(approximant="TaylorF2",
-                                                    mass1=6, mass2=6, delta_f=1.0 / 4, f_lower=40)
+        # get TaylorF2 in frequency domain
+        hp, _ = waveform.get_fd_waveform(approximant="TaylorF2",
+                                         mass1=6, mass2=6,  # m1 / m2 <= 4 but m1, m2 may be too small for 3.5PN approx
+                                         delta_f=1.0 / 4, f_lower=40)
 
-        MP = ModifiedPolarization()
-        h_tilde = MP.mod_polarization_array(f, f_max, chirp_mass, z, alpha, A_term)
+        # perform ifft
+        t_len = int(1.0 / delta_t / delta_f)
+        hp.resize(t_len / 2 + 1)
+        sp = types.TimeSeries(types.zeros(t_len), delta_t=delta_t)
+        fft.ifft(hp, sp)
 
-        # FFT it to the time-domain
-        tlen = int(1.0 / delta_t / delta_f)
-        h_tilde.resize(tlen / 2 + 1)
-        sp = types.TimeSeries(types.zeros(tlen), delta_t=delta_t)
-        fft.ifft(h_tilde, h_tilde)  # frequency domain -> time domain
-
-        plt.plot(sp.sample_times, sp, label="TaylorF2 (IFFT)")
-
-        plt.title('FFT of waveform')
-        plt.ylabel('$h_{+,x}(t)$')
+        # plot strain
+        plt.plot(sp.sample_times, sp, label='TaylorF2 (IFFT)')
+        plt.ylabel('Strain')
         plt.xlabel('Time (s)')
-
-        # type(sptilde): pycbc.types.frequencyseries.FrequencySeries models a frequency series consisting of uniformly sampled scalar values
+        plt.legend()
         return plt.show()
 
     @classmethod
-    def plot_phenomA(cls):
+    def plot_IMRPhenomA(cls):
         """ gets the frequency domain waveform for phenomA signa and iffts it to plot over time domain """
         delta_t = 1.0 / 4096
         delta_f = 1.0 / 4

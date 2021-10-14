@@ -120,7 +120,7 @@ class ModifiedPolarization:
     def psi_gr_numerical_coefficients(cls, chirp_mass, f, z, m_1, m_2):
         v = cls.u(chirp_mass, f)
         v_lso = cls.v_lso()
-        m, eta = cls.m(chirp_mass, z, m_1, m_2)
+        _, eta = cls.m(chirp_mass, z, m_1, m_2)  # PROBLEM: NO REDSHIFT DEPENDENCE BECAUSE m IS NEVER USED
         gamma = .577216  # euler mascheroni constant (dimensionless)
 
         v_2 = 20 / 9 * (743 / 336 + (11 / 4 * eta))
