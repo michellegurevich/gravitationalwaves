@@ -37,7 +37,8 @@ def main():
 
     TD = TimeDomain
     # TD.plot_IMRPhenomA()
-    TD.plot_TaylorF2()
+    # TD.plot_TaylorF2()
+    TD.plot_standard_waveform_ifft()
 
 
 if __name__ == '__main__':
