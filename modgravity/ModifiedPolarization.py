@@ -13,8 +13,8 @@ class ModifiedPolarization:
 
     E_e = h * f_e
     m_g = h / lambda_g
-    t_c = 1
-    phi_c = 1
+    t_c = .0001  # verify in references
+    phi_c = .0001  # verify in references
 
     h0 = 72
     omega_m = .3
@@ -24,28 +24,28 @@ class ModifiedPolarization:
         pass
 
     @classmethod
-    def lambda_A_term(cls, A_term, alpha):
+    def lambda_A_term(cls, alpha, A_term):
         return cls.h * A_term ** (1 / (alpha - 2))  # always has units of length irrespective of alpha value
 
     @classmethod
-    def u(cls, chirp_mass, f):
+    def u(cls, f, chirp_mass):
         return math.pi * chirp_mass * f
 
     @classmethod
-    def beta(cls, chirp_mass, z):
+    def beta(cls, z_max, z, chirp_mass):
         CD = CalculateDistances()
-        D_0 = CD.alpha_dist(z, 0)
+        D_0 = CD.alpha_dist(z_max, z, 0)
         return (math.pi ** 2 * D_0 * chirp_mass) / (cls.lambda_g ** 2 * (1 + z))
 
     @classmethod
     def zeta(cls, z, alpha, A_term, chirp_mass):
-        lambda_A_term = cls.lambda_A_term(A_term, alpha)
         CD = CalculateDistances()
+        lambda_A_term = cls.lambda_A_term(alpha, A_term)
         if alpha == 1:
-            D_1 = CD.alpha_dist(z, 1)
+            D_1 = CD.alpha_dist(z_max, z, alpha)
             zeta = (math.pi * D_1) / lambda_A_term
         else:
-            D_alpha = CD.alpha_dist(z, alpha)
+            D_alpha = CD.alpha_dist(z_max, z, alpha)
             term_i = math.pi ** (2 - alpha) / (1 - alpha)
             term_ii = D_alpha / (lambda_A_term ** (2 - alpha))
             term_iii = (chirp_mass ** (1 - alpha)) / ((1 + z) ** (1 - alpha))
@@ -53,60 +53,64 @@ class ModifiedPolarization:
         return zeta
 
     @classmethod
-    def delta_psi(cls, alpha, A_term, chirp_mass, z, f):
-        term_i = cls.beta(chirp_mass, z) / cls.u(chirp_mass, f)
-        if alpha == 1:
-            term_ii = cls.zeta(z, alpha, A_term, chirp_mass) * math.log(cls.u(chirp_mass, f))
-        else:
-            term_ii = cls.zeta(z, alpha, A_term, chirp_mass) * (cls.u(chirp_mass, f) ** (alpha - 1))
-        return -1 * (term_i + term_ii)
-
-    @classmethod
-    def curved_A(cls, chirp_mass, z):
+    def curved_A(cls, z, chirp_mass):
         CD = CalculateDistances()
         D_L = CD.lum_dist(z)
         return math.sqrt(math.pi / 30) * (chirp_mass ** 2 / D_L)
 
     @classmethod
-    def mod_amplitude(cls, chirp_mass, z, f):
+    def mod_amplitude(cls, f, z, chirp_mass):
         """ A~(f) term """
-        return cls.epsilon * cls.curved_A(chirp_mass, z) * (cls.u(chirp_mass, f) ** (-7 / 6))
+        return cls.epsilon * cls.curved_A(z, chirp_mass) * (cls.u(f, chirp_mass) ** (-7 / 6))
 
     @classmethod
-    def psi_gr(cls, f, chirp_mass, z, m_1, m_2):  # , t_c, phi_c):
+    def delta_psi(cls, f, z, alpha, A_term, chirp_mass):
+        term_i = cls.beta(z, chirp_mass) / cls.u(f, chirp_mass)
+        if alpha == 1:
+            term_ii = cls.zeta(z, alpha, A_term, chirp_mass) * math.log(cls.u(f, chirp_mass))
+        else:
+            term_ii = cls.zeta(z, alpha, A_term, chirp_mass) * (cls.u(f, chirp_mass) ** (alpha - 1))
+        return -1 * (term_i + term_ii)
+
+    @classmethod
+    def psi_gr(cls, f, z, chirp_mass, m_1, m_2):
         freq_term = 2 * math.pi * f * cls.t_c
-        table_coefficient_terms = cls.psi_gr_numerical_coefficients(chirp_mass, f, z, m_1, m_2)
-        numerical_term = 3 / 128 * (cls.u(chirp_mass, f) ** -5 / 3) + table_coefficient_terms
+        table_coefficient_terms = cls.psi_gr_numerical_coefficients(f, z, chirp_mass, m_1, m_2)
+        numerical_term = 3 / 128 * (cls.u(f, chirp_mass) ** -5 / 3) + table_coefficient_terms
         return freq_term - cls.phi_c - math.pi / 4 + numerical_term
 
     @classmethod
-    def psi(cls, alpha, A_term, chirp_mass, z, f, m_1, m_2):
-        psi_gr = cls.psi_gr(f, chirp_mass, z, m_1, m_2)  # , t_c, phi_c)
-        delta_psi = cls.delta_psi(alpha, A_term, chirp_mass, z, f)
-        return psi_gr + delta_psi  # double, np array
+    def psi(cls, f, z, alpha, A_term, chirp_mass, m_1, m_2):
+        psi_gr = cls.psi_gr(f, z, chirp_mass, m_1, m_2)
+        delta_psi = cls.delta_psi(f, z, alpha, A_term, chirp_mass)
+        return psi_gr + delta_psi
 
     @classmethod
-    def mod_polarization_array(cls, f, f_max, chirp_mass, z, alpha, A_term, m_1, m_2):
+    def mod_polarization_array(cls, f, f_cut, z, alpha, A_term, chirp_mass, m_1, m_2):
         """ assigns the LOG OF VALUE (for plotting purposes) of the product of modified amplitude and exp(i*psi) to an
         array whose length corresponds to that of psi """
-
         arr = []
         for i in range(50):
-            h_tilde = cmath.log(cls.mod_amplitude(chirp_mass, z, f) *
-                                cmath.exp(1j * cls.psi(alpha, A_term, chirp_mass, z, f, m_1, m_2)[i])) \
-                if f < f_max else 0
+            h_tilde = cmath.log(cls.mod_amplitude(f, z, chirp_mass) *
+                                cmath.exp(1j * cls.psi(f, z, alpha, A_term, chirp_mass, m_1, m_2)[i])) \
+                if f < f_cut else 0
             arr.append(h_tilde)
         return np.array(arr).real, np.array(arr).imag
 
     @classmethod
-    def chirp_mass_e(cls, chirp_mass, z):
-        """ M_e is the source chirp mass, related to measured chirp mass by the following """
+    def chirp_mass(cls, m1_, m2):
+        """ M can be calculated from component masses m_1 and m_2 by the following """
+        return ((m_1 * m_2) ** (3/5)) / ((m_1 + m_2) ** (1/5))
+
+    @classmethod
+    def chirp_mass_e(cls, z, chirp_mass):
+        """ M_e is the (emitted) source chirp mass, related to (observed) measured chirp mass by the following """
         return chirp_mass / (1 + z)
 
     @classmethod
-    def m(cls, chirp_mass, z, m_1, m_2):
+    def m(cls, z, chirp_mass, m_1, m_2):
         """ calculates symmetric mass ratio eta from source chirp mass and component masses; returns m and eta """
-        M_e = cls.chirp_mass_e(chirp_mass, z)
+        M_e = cls.chirp_mass_e(z, chirp_mass)
         eta = (m_1 * m_2) / ((m_1 + m_2) ** 2)
         return M_e / (eta**(3/5)), eta
 
@@ -117,10 +121,10 @@ class ModifiedPolarization:
         return 1 / math.sqrt(6)
 
     @classmethod
-    def psi_gr_numerical_coefficients(cls, chirp_mass, f, z, m_1, m_2):
-        v = cls.u(chirp_mass, f)
+    def psi_gr_numerical_coefficients(cls, f, z, chirp_mass, m_1, m_2):
+        v = cls.u(f, chirp_mass)
         v_lso = cls.v_lso()
-        _, eta = cls.m(chirp_mass, z, m_1, m_2)  # PROBLEM: NO REDSHIFT DEPENDENCE BECAUSE m IS NEVER USED
+        _, eta = cls.m(z, chirp_mass, m_1, m_2)
         gamma = .577216  # euler mascheroni constant (dimensionless)
 
         v_2 = 20 / 9 * (743 / 336 + (11 / 4 * eta))
@@ -139,13 +143,9 @@ class ModifiedPolarization:
         return (v_2 * v**2) - (v_3 * v**3) + (v_4 * v**4) + (v_5 * v**5) + (v_6 * v**6) + (v_7 * v**7)
 
     @classmethod
-    def std_polarization_array(cls, f, f_max, chirp_mass, z, m_1, m_2):
+    def std_polarization_array(cls, f, z, chirp_mass, m_1, m_2):
         arr = []
-
-        for i in range(50):
-            h = cmath.log(cls.curved_A(chirp_mass, z) * cmath.exp(1j * cls.psi_gr(f, chirp_mass, z, m_1, m_2)))
-            arr.append(h)
-        return np.array(arr).real, np.array(arr).imag
+        return 0
 
     """ do not calculate f_dot and set equal to zero to recover max value attained by f
     @classmethod
