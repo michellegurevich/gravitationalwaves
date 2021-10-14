@@ -26,7 +26,7 @@ class TestCalculateDistances(unittest.TestCase):
         mine = self.CD.lum_dist_array(self.z_max, self.z)
         cambs = self.SC.get_ld(self.z)
         for element in range(len(mine)):
-            self.assertTrue(math.isclose(mine[element], cambs[element], rel_tol=1))
+            self.assertTrue(math.isclose(mine[element], cambs[element], rel_tol=.1))
 
     def test_chi(self):
         self.assertEqual(self.CD.chi(self.z_max, self.alpha, self.A_term, self.m_g, self.E_e, self.t_e, self.t_a), 154.97909219909434)

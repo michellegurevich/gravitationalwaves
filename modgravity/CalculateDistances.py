@@ -22,9 +22,7 @@ class CalculateDistances:
     @classmethod
     def lum_dist_array(cls, z_max, z):
         """ generates np array of luminosity distances over a uniform interval of redshifts provided by vector z """
-        arr = np.array([cls.lum_dist(z_max, np.linspace(0, i)) for i in np.nditer(z)])
-        for i in np.nditer(z):
-            cls.lum_dist(i, np.linspace(0, i))
+        arr = np.array([cls.lum_dist(i, np.linspace(0, i)) for i in np.nditer(z)])
         return arr
 
     @classmethod
@@ -40,9 +38,7 @@ class CalculateDistances:
     @classmethod
     def alpha_dist_array(cls, z_max, z, alpha):
         """ generates np array of modified alpha distances over a uniform interval of redshifts provided by vector z """
-        arr = np.array([cls.lum_dist(z_max, np.linspace(0, i)) for i in np.nditer(z)])
-        for i in np.nditer(z):
-            cls.alpha_dist(i, np.linspace(0, i), alpha)
+        arr = np.array([cls.lum_dist(i, np.linspace(0, i)) for i in np.nditer(z)])
         return arr
 
     @classmethod
@@ -65,11 +61,9 @@ class CalculateDistances:
             integral = quad(lambda t: (1 / (1 + (t * z_max))) ** (1 - alpha), t_e, t_a)
             return constant * integral[0]
 
-        return term_I(z_max, t_e, t_a) - term_II(t_e, t_a, m_g) - term_III(A_term, E_e, alpha)
+        return term_I(z_max, t_e, t_a) - term_II(m_g, t_e, t_a) - term_III(alpha, A_term, E_e)
 
     @classmethod
     def chi_array(cls, z, alpha, A_term, m_g, E_e, t_e, t_a):
-        step = z[len(z) - 1] / len(z)
-        z_values = np.arange(0, z[len(z) - 1], step)
-        arr = np.array([cls.chi(i, m_g, E_e, t_e, t_a, alpha, A_term) for i in z_values])
+        arr = np.array([cls.chi(i, alpha, A_term, m_g, E_e, t_e, t_a) for i in np.nditer(z)])
         return arr
