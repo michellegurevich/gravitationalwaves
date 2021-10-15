@@ -1,34 +1,51 @@
-import numpy as np
-import math
+import numpy
+from pycbc.types import TimeSeries
+import pylab
+import pycbc.waveform
 
-from SetCosmology import SetCosmology
-from CalculateDistances import CalculateDistances
-from ModifiedPolarization import ModifiedPolarization
-from TimeDomain import TimeDomain
-from Plots import Plots
+def test_waveform(**args):
+    flow = args['f_lower'] # Required parameter
+    dt = args['delta_t']   # Required parameter
+    fpeak = args['fpeak']  # A new parameter for my model
+
+    t = numpy.arange(0, 10, dt)
+    f = t/t.max() * (fpeak - flow) + flow
+    a = t
+
+    wf = numpy.exp(2.0j * numpy.pi * f * t) * a
+
+    # Return product should be a pycbc time series in this case for
+    # each GW polarization
+    #
+    #
+    # Note that by convention, the time at 0 is a fiducial reference.
+    # For CBC waveforms, this would be set to where the merger occurs
+    offset = - len(t) * dt
+    wf = TimeSeries(wf, delta_t=dt, epoch=offset)
+    return wf.real(), wf.imag()
 
 
 def main():
-    z_max = 4
-    z = np.linspace(0, z_max)
+    # This tells pycbc about our new waveform so we can call it from standard
+    # pycbc functions. If this were a frequency-domain model, select 'frequency'
+    # instead of 'time' to this function call.
+    pycbc.waveform.add_custom_waveform('test', test_waveform, 'time', force=True)
 
-    alpha = 3
-    A_term = .0001
-    chirp_mass = 25  # kg
-    f = np.linspace(10e-5, 10e-1)  # Hz
-    f_cut = 10e-1
-    m_1 = 6
-    m_2 = 6
+    # Let's plot what our new waveform looks like
+    hp, hc = pycbc.waveform.get_td_waveform(approximant="test",
+                                            f_lower=20, fpeak=50,
+                                            delta_t=1.0 / 4096)
+    pylab.figure(0)
+    pylab.plot(hp.sample_times, hp)
+    pylab.xlabel('Time (s)')
 
-    P = Plots()
-    #P.modified_polarization(f, f_cut, z_max, z, alpha, A_term, chirp_mass, m_1, m_2)
-    #P.standard_polarization(f, z_max, z, chirp_mass, m_1, m_2)
-
-    TD = TimeDomain()
-    # TD.plot_IMRPhenomA()
-    # TD.plot_TaylorF2()
-    TD.plot_standard_waveform_ifft()
-
+    pylab.figure(1)
+    hf = hp.to_frequencyseries()
+    pylab.plot(hf.sample_frequencies, hf.real())
+    pylab.xlabel('Frequency (Hz)')
+    pylab.xscale('log')
+    pylab.xlim(20, 100)
+    pylab.show()
 
 if __name__ == '__main__':
-    main()
+        main()

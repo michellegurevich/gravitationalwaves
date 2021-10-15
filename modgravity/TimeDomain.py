@@ -11,6 +11,7 @@ from pycbc import types, fft, waveform
 from pycbc.waveform import get_td_waveform, td_approximants, fd_approximants
 from scipy.signal import hilbert
 from pycbc.types import FrequencySeries
+import pycbc.waveform
 
 
 class TimeDomain:
@@ -22,8 +23,8 @@ class TimeDomain:
     def plot_modified_waveform_ifft():
         return 0
 
-    @staticmethod
-    def test_waveform():
+    @classmethod
+    def test_waveform(cls, **args):
         flow = args['f_lower']  # Required parameter
         df = args['delta_f']  # Required parameter
         fpeak = args['fpeak']  # A new parameter for my model
@@ -44,28 +45,28 @@ class TimeDomain:
         wf = FrequencySeriesSeries(wf, delta_f=df, epoch=offset)
         return wf.real(), wf.imag()
 
-    @staticmethod
-    def add_test():
+    @classmethod
+    def add_test(cls):
         # This tells pycbc about our new waveform so we can call it from standard
         # pycbc functions. If this were a frequency-domain model, select 'frequency'
         # instead of 'time' to this function call.
-        pycbc.waveform.add_custom_waveform('test', test_waveform, 'time', force=True)
+        pycbc.waveform.add_custom_waveform('test', cls.test_waveform(), 'frequency', force=True)
 
         # Let's plot what our new waveform looks like
         hp, hc = pycbc.waveform.get_td_waveform(approximant="test",
                                                 f_lower=20, fpeak=50,
                                                 delta_t=1.0 / 4096)
-        pylab.figure(0)
-        pylab.plot(hp.sample_times, hp)
-        pylab.xlabel('Time (s)')
+        plt.figure(0)
+        plt.plot(hp.sample_times, hp)
+        plt.xlabel('Time (s)')
 
-        pylab.figure(1)
+        plt.figure(1)
         hf = hp.to_frequencyseries()
-        pylab.plot(hf.sample_frequencies, hf.real())
-        pylab.xlabel('Frequency (Hz)')
-        pylab.xscale('log')
-        pylab.xlim(20, 100)
-        return pylab.show()
+        plt.plot(hf.sample_frequencies, hf.real())
+        plt.xlabel('Frequency (Hz)')
+        plt.xscale('log')
+        plt.xlim(20, 100)
+        return plt.show()
 
     @classmethod
     def plot_standard_waveform_ifft(cls):
