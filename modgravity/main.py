@@ -15,20 +15,14 @@ def main():
     alpha = 3
     A_term = .0001
     chirp_mass = 25  # kg
-    f = 10e-3  # Hz
+    f = np.linspace(10e-5, 10e-1)  # Hz
+    f_cut = 10e-1
+    m_1 = 6
+    m_2 = 6
 
-    MP = ModifiedPolarization()
-    # print(MP.delta_psi(alpha, A_term, chirp_mass, z, f))
-    # print(MP.mod_polarization(f, 10e-4, chirp_mass, z, alpha, A_term))  # f_max < f WORKS FINE (returns 0)
-    # print(MP.mod_polarization_log(f, 10e-2, chirp_mass, z, alpha, A_term))  # f_max > f
-    # print(MP.mod_polarization_array(f, 100, chirp_mass, z, alpha, A_term))
-    # P.modified_polarization(z, f, 100, chirp_mass, alpha, A_term, 16, 15)
-    # P.standard_polarization(z, f, 100, chirp_mass, 16, 15)
-
-    TD = TimeDomain
-    # TD.plot_IMRPhenomA()
-    # TD.plot_TaylorF2()
-    TD.plot_standard_waveform_ifft()
+    P = Plots()
+    P.modified_polarization(f, f_cut, z_max, z, alpha, A_term, chirp_mass, m_1, m_2)
+    P.standard_polarization(f, z_max, z, chirp_mass, m_1, m_2)
 
 
 if __name__ == '__main__':
