@@ -98,7 +98,7 @@ class ModifiedPolarization:
         return arr[0].real, arr[0].imag
 
     @classmethod
-    def chirp_mass(cls, m1_, m2):
+    def chirp_mass(cls, m_1, m_2):
         """ M can be calculated from component masses m_1 and m_2 by the following """
         return ((m_1 * m_2) ** (3/5)) / ((m_1 + m_2) ** (1/5))
 

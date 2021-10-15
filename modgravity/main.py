@@ -21,8 +21,13 @@ def main():
     m_2 = 6
 
     P = Plots()
-    P.modified_polarization(f, f_cut, z_max, z, alpha, A_term, chirp_mass, m_1, m_2)
-    P.standard_polarization(f, z_max, z, chirp_mass, m_1, m_2)
+    #P.modified_polarization(f, f_cut, z_max, z, alpha, A_term, chirp_mass, m_1, m_2)
+    #P.standard_polarization(f, z_max, z, chirp_mass, m_1, m_2)
+
+    TD = TimeDomain()
+    # TD.plot_IMRPhenomA()
+    # TD.plot_TaylorF2()
+    TD.plot_standard_waveform_ifft()
 
 
 if __name__ == '__main__':

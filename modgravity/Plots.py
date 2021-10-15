@@ -66,7 +66,7 @@ class Plots:
 
     @staticmethod
     def modified_polarization(f, f_cut, z, z_max, alpha, A_term, chirp_mass, m_1, m_2):
-        """ plot the modified polarization, h~(f), in frequency space against redshift """
+        """ plot the modified polarization, h~(f), in frequency space """
         MP = ModifiedPolarization()
         h_tilde_real, h_tilde_imag = MP.mod_polarization_array(f, f_cut, z, z_max, alpha, A_term, chirp_mass, m_1, m_2)
         """ f_em / f_obs = 1 + z => f (measured as defined in paper, aka f_obs) => define array of frequency values 
@@ -82,7 +82,7 @@ class Plots:
 
     @staticmethod
     def standard_polarization(f, z_max, z, chirp_mass, m_1, m_2):
-        """ plot the standard polarization, h(f), in frequency and time """
+        """ plot the standard polarization, h(f), in frequency space """
         MP = ModifiedPolarization()
         h_real, h_imag = MP.std_polarization_array(f, z_max, z, chirp_mass, m_1, m_2)
         f_obs = np.linspace(10e-5, 10e-1)
