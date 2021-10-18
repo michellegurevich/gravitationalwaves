@@ -91,11 +91,11 @@ class ModifiedPolarization:
         array whose length corresponds to that of psi """
         arr = []
         for i in range(50):
-            h_tilde = np.log(cls.mod_amplitude(f, z_max, z, chirp_mass) *
-                             np.exp(1j * cls.psi(f, z_max, z, alpha, A_term, chirp_mass, m_1, m_2))) \
+            h_tilde = np.log(cls.mod_amplitude(f[i], z_max, z, chirp_mass) *
+                             np.exp(1j * cls.psi(f[i], z_max, z, alpha, A_term, chirp_mass, m_1, m_2))) \
                 if f[i] < f_cut else 0
             arr.append(h_tilde)
-        return arr[0].real, arr[0].imag
+        return [arr[i].real for i in range(50)], [arr[i].imag for i in range(50)]
 
     @classmethod
     def chirp_mass(cls, m_1, m_2):
@@ -147,10 +147,11 @@ class ModifiedPolarization:
         """ assigns the LOG OF VALUE (for plotting purposes) of the product of standard amplitude and exp(i*psi_GR) to
         an array whose length corresponds to that of psi """
         arr = []
+
         for i in range(50):
-            h = np.log(cls.curved_A(z_max, z, chirp_mass) * np.exp(1j * cls.psi_gr(f, z_max, chirp_mass, m_1, m_2)))
+            h = np.log(cls.curved_A(z_max, z, chirp_mass) * np.exp(1j * cls.psi_gr(f[i], z_max, chirp_mass, m_1, m_2)))
             arr.append(h)
-        return arr[0].real, arr[0].imag
+        return [arr[i].real for i in range(50)], [arr[i].imag for i in range(50)]
 
     """ do not calculate f_dot and set equal to zero to recover max value attained by f
     @classmethod
