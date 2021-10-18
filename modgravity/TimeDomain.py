@@ -101,10 +101,11 @@ class TimeDomain:
     def plot_pycbc_ifft(cls, approximant, hp):
         """ gets the frequency domain waveform for a signal and perform ifft to plot over time domain """
         delta_t = 1.0 / 4096
+        delta_f = 1.0 / 40
 
         # perform ifft
-        t_len = int(1.0 / delta_t / hp.delta_f)
-        hp.resize(t_len / 2 + 1)
+        t_len = int(1.0 / delta_f / delta_t)
+        # hp = np.resize(hp, (int(t_len / 2 + 1))) # CANT USE NP RESIZE BC THEN ITS NOT A PYCBC ARRAY
         sp = types.TimeSeries(types.zeros(t_len), delta_t=delta_t)
         fft.ifft(hp, sp)
 
