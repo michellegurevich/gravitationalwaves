@@ -1,18 +1,20 @@
-import numpy
+import numpy as np
 from pycbc.types import TimeSeries
 import pylab
 import pycbc.waveform
+from ModifiedPolarization import ModifiedPolarization
+
 
 def test_waveform(**args):
-    flow = args['f_lower'] # Required parameter
-    dt = args['delta_t']   # Required parameter
+    flow = args['f_lower']  # Required parameter
+    dt = args['delta_t']  # Required parameter
     fpeak = args['fpeak']  # A new parameter for my model
 
-    t = numpy.arange(0, 10, dt)
-    f = t/t.max() * (fpeak - flow) + flow
+    t = np.arange(0, 10, dt)
+    f = t / t.max() * (fpeak - flow) + flow
     a = t
 
-    wf = numpy.exp(2.0j * numpy.pi * f * t) * a
+    wf = np.exp(2.0j * np.pi * f * t) * a
 
     # Return product should be a pycbc time series in this case for
     # each GW polarization
@@ -26,12 +28,8 @@ def test_waveform(**args):
 
 
 def main():
-    # This tells pycbc about our new waveform so we can call it from standard
-    # pycbc functions. If this were a frequency-domain model, select 'frequency'
-    # instead of 'time' to this function call.
     pycbc.waveform.add_custom_waveform('test', test_waveform, 'time', force=True)
 
-    # Let's plot what our new waveform looks like
     hp, hc = pycbc.waveform.get_td_waveform(approximant="test",
                                             f_lower=20, fpeak=50,
                                             delta_t=1.0 / 4096)
@@ -47,5 +45,6 @@ def main():
     pylab.xlim(20, 100)
     pylab.show()
 
+
 if __name__ == '__main__':
-        main()
+    main()
