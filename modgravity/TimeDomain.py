@@ -19,67 +19,36 @@ class TimeDomain:
     def __init__(self):
         pass
 
-    @staticmethod
-    def plot_modified_waveform_ifft():
-        return 0
-
     @classmethod
-    def test_waveform(cls, **args):
-        flow = args['f_lower']  # Required parameter
-        df = args['delta_f']  # Required parameter
-        fpeak = args['fpeak']  # A new parameter for my model
-
-        t = numpy.arange(0, 10, df)
-        f = t / t.max() * (fpeak - flow) + flow
-        a = t
-
-        wf = numpy.exp(2.0j * numpy.pi * f * t) * a
-
-        # Return product should be a pycbc time series in this case for
-        # each GW polarization
-        #
-        #
-        # Note that by convention, the time at 0 is a fiducial reference.
-        # For CBC waveforms, this would be set to where the merger occurs
-        offset = - len(t) * dt
-        wf = FrequencySeriesSeries(wf, delta_f=df, epoch=offset)
-        return wf.real(), wf.imag()
-
-    @classmethod
-    def add_test(cls):
-        # This tells pycbc about our new waveform so we can call it from standard
-        # pycbc functions. If this were a frequency-domain model, select 'frequency'
-        # instead of 'time' to this function call.
-        pycbc.waveform.add_custom_waveform('test', cls.test_waveform(), 'frequency', force=True)
-
-        # Let's plot what our new waveform looks like
-        hp, hc = pycbc.waveform.get_td_waveform(approximant="test",
-                                                f_lower=20, fpeak=50,
-                                                delta_t=1.0 / 4096)
-        plt.figure(0)
-        plt.plot(hp.sample_times, hp)
-        plt.xlabel('Time (s)')
-
-        plt.figure(1)
-        hf = hp.to_frequencyseries()
-        plt.plot(hf.sample_frequencies, hf.real())
-        plt.xlabel('Frequency (Hz)')
-        plt.xscale('log')
-        plt.xlim(20, 100)
-        return plt.show()
-
-    @classmethod
-    def plot_standard_waveform_ifft(cls):
-        MP = ModifiedPolarization()
+    def test_waveform(**args
+        mass_1 = args['mass1']
+        mass_2 = args['mass2']
+        df = args['delta_f']
+        flow = args['f_lower']
         f = np.linspace(10e-5, 10e-1)
-        z = np.linspace(0, 4)
-        z_max = 4
-        m_1 = 6
-        m_2 = 6
-        chirp_mass = MP.chirp_mass(m_1, m_2)
-        approximant = 'Waveform'
-        hp = MP.std_polarization_array(f, z_max, z, chirp_mass, m_1, m_2)
-        return cls.plot_ifft_of_waveform(approximant, hp)
+        # t = f / f.max() * (tpeak - tlow) + tlow
+        offset = - len(f) * df
+        MP = ModifiedPolarization()
+        chirp_mass = MP.chirp_mass(mass_1, mass_2)
+
+        wf = MP.std_polarization_array(f, 4, np.linspace(0, 4), chirp_mass, mass_1, mass_2)
+        wf_real = FrequencySeries(wf[0], delta_f=df, epoch=offset)
+        wf_imag = FrequencySeries(wf[1], delta_f=df, epoch=offset)
+        return wf_real, wf_imag
+
+    @classmethod
+    def register_standard_waveform(cls):
+        approximant = 'standard'
+        pycbc.waveform.add_custom_waveform('test', cls.test_waveform, 'frequency', force=True)
+        hp, hc = pycbc.waveform.get_fd_waveform(approximant='test', mass1=65, mass2=80, delta_f=1.0 / 4, f_lower=40)
+
+        plt.plot(f, hc)  # plot imag values
+        plt.xlabel('$lg(f)$')
+        plt.ylabel('$lg(h)$')
+        plt.title('Standard polarization in frequency space')
+        plt.xlabel('Frequency (Hz)')
+        plt.show()
+        return cls.plot_pycbc_ifft(approximant, hc)
 
     @classmethod
     def plot_TaylorF2(cls):

@@ -1,55 +1,33 @@
 import numpy as np
-from pycbc.types import FrequencySeries
-from matplotlib import pyplot as plt
-import pycbc.waveform
+import math
+
+from SetCosmology import SetCosmology
+from CalculateDistances import CalculateDistances
 from ModifiedPolarization import ModifiedPolarization
-from Plots import Plots
 from TimeDomain import TimeDomain
+from Plots import Plots
 
-
-def test_waveform(**args):
-    mass_1 = args['mass1']
-    mass_2 = args['mass2']
-    df = args['delta_f']
-    flow = args['f_lower']
-
-    f = np.linspace(10e-5, 10e-1)
-    t = np.linspace(-10, 10)
-    # t = f / f.max() * (tpeak - tlow) + tlow
-
-    MP = ModifiedPolarization()
-    chirp_mass = MP.chirp_mass(6, 6)
-    wf = MP.std_polarization_array(f, 4, np.linspace(0, 4), chirp_mass, 6, 6)
-    # wf = MP.mod_polarization_array(f, 10e-1, 4, np.linspace(0, 4), 0.001, 0.01, chirp_mass, 6, 6)
-
-    offset = - len(f) * df
-    wf_real = FrequencySeries(wf[0], delta_f=df, epoch=offset)
-    wf_imag = FrequencySeries(wf[1], delta_f=df, epoch=offset)
-    return wf_real, wf_imag
 
 def main():
-    pycbc.waveform.add_custom_waveform('test', test_waveform, 'frequency', force=True)
+    z_max = 4
+    z = np.linspace(0, z_max)
 
-    hp, hc = pycbc.waveform.get_fd_waveform(approximant='test', mass1=65, mass2=80, delta_f=1.0 / 4, f_lower=40)
-    f = np.linspace(10e-5, 10e-1)
-    plt.figure(0)
-    #plt.plot(f, hc)  # plot imag values
-    #plt.xlabel('$lg(f)$')
-    #plt.ylabel('$lg(h)$')
-    #plt.title('Standard polarization in frequency space')
-    #plt.xlabel('Frequency (Hz)')
-    #plt.show()
+    alpha = 3
+    A_term = .0001
+    chirp_mass = 25  # kg
+    f = np.linspace(10e-5, 10e-1)  # Hz
+    f_cut = 10e-1
+    m_1 = 6
+    m_2 = 6
 
-    #plt.figure(1)
     P = Plots()
-    MP = ModifiedPolarization()
-    #chirp_mass = MP.chirp_mass(6, 6)
-    # P.modified_polarization(f, 10e-1, 4, np.linspace(0, 4), 0.001, 0.01, chirp_mass, 6, 6)
-    #P.standard_polarization(f, 4, np.linspace(0, 4), chirp_mass, 6, 6)
+    # P.modified_polarization(f, f_cut, z_max, z, alpha, A_term, chirp_mass, m_1, m_2)
+    # P.standard_polarization(f, z_max, z, chirp_mass, m_1, m_2)
 
     TD = TimeDomain()
-    TD.plot_pycbc_ifft('test', hc)
-
+    # TD.plot_IMRPhenomA()
+    # TD.plot_TaylorF2()
+    TD.register_standard_waveform()
 
 
 if __name__ == '__main__':
