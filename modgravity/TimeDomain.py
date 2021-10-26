@@ -1,17 +1,13 @@
-import camb
-import matplotlib
-import numpy as np
 import os
 import platform
 import sys
-from ModifiedPolarization import ModifiedPolarization
-from camb import model, initialpower
+import camb
+import numpy as np
 from matplotlib import pyplot as plt
-from pycbc import types, fft, waveform
-from pycbc.waveform import get_td_waveform, td_approximants, fd_approximants
 from scipy.signal import hilbert
+from pycbc import types, fft, waveform
 from pycbc.types import FrequencySeries
-import pycbc.waveform
+from ModifiedPolarization import ModifiedPolarization
 
 
 class TimeDomain:
@@ -20,7 +16,7 @@ class TimeDomain:
         pass
 
     @classmethod
-    def test_waveform(**args
+    def test_waveform(cls, **args):
         mass_1 = args['mass1']
         mass_2 = args['mass2']
         df = args['delta_f']
@@ -37,18 +33,25 @@ class TimeDomain:
         return wf_real, wf_imag
 
     @classmethod
-    def register_standard_waveform(cls):
-        approximant = 'standard'
-        pycbc.waveform.add_custom_waveform('test', cls.test_waveform, 'frequency', force=True)
-        hp, hc = pycbc.waveform.get_fd_waveform(approximant='test', mass1=65, mass2=80, delta_f=1.0 / 4, f_lower=40)
+    def register_test_waveform(cls):
+        approximant = 'test'
+        return waveform.add_custom_waveform(approximant, cls.test_waveform, 'frequency', force=True)
 
+    @classmethod
+    def get_test_waveform(cls):
+        approximant = 'test'
+        hp, hc = waveform.get_fd_waveform(approximant=approximant, mass1=65, mass2=80, delta_f=1.0 / 4,
+                                                f_lower=40)
+        return hp, hc
+
+    @classmethod
+    def plot_test_waveform(cls, hp, hc, f):
         plt.plot(f, hc)  # plot imag values
         plt.xlabel('$lg(f)$')
         plt.ylabel('$lg(h)$')
         plt.title('Standard polarization in frequency space')
         plt.xlabel('Frequency (Hz)')
-        plt.show()
-        return cls.plot_pycbc_ifft(approximant, hc)
+        return plt.show()
 
     @classmethod
     def plot_TaylorF2(cls):
@@ -56,7 +59,7 @@ class TimeDomain:
         hp, _ = waveform.get_fd_waveform(approximant=approximant,
                                          mass1=6, mass2=6,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
                                          delta_f=1.0 / 4, f_lower=40)
-        return cls.plot_ifft_of_waveform(approximant, hp)
+        return cls.plot_pycbc_ifft(approximant, hp)
 
     @classmethod
     def plot_IMRPhenomA(cls):
@@ -64,7 +67,7 @@ class TimeDomain:
         hp, _ = waveform.get_fd_waveform(approximant=approximant,
                                          mass1=65, mass2=80,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
                                          delta_f=1.0 / 4, f_lower=40)
-        return cls.plot_ifft_of_waveform(approximant, hp)
+        return cls.plot_pycbc_ifft(approximant, hp)
 
     @classmethod
     def plot_pycbc_ifft(cls, approximant, hp):

@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from matplotlib import pyplot as plt
 
 from SetCosmology import SetCosmology
 from CalculateDistances import CalculateDistances
@@ -24,10 +25,22 @@ def main():
     # P.modified_polarization(f, f_cut, z_max, z, alpha, A_term, chirp_mass, m_1, m_2)
     # P.standard_polarization(f, z_max, z, chirp_mass, m_1, m_2)
 
+
     TD = TimeDomain()
-    # TD.plot_IMRPhenomA()
-    # TD.plot_TaylorF2()
-    TD.register_standard_waveform()
+
+    # register test waveform to pycbc fd collection
+    TD.register_test_waveform()
+
+    # get waveform from pycbc fd collection
+    hp, hc = TD.get_test_waveform()
+
+    # plot strain against frequency
+    plt.figure(1)
+    TD.plot_test_waveform(hp, hc, f)
+
+    # perform ifft to plot strain against time
+    plt.figure(2)
+    TD.plot_pycbc_ifft('test', hp)
 
 
 if __name__ == '__main__':
