@@ -28,6 +28,10 @@ def main():
 
     TD = TimeDomain()
 
+    # plot frequency of TaylorF2
+    TD.plot_TaylorF2_freq()
+    TD.plot_TaylorF2()
+
     # register test waveform to pycbc fd collection
     TD.register_test_waveform()
 

@@ -40,8 +40,7 @@ class TimeDomain:
     @classmethod
     def get_test_waveform(cls):
         approximant = 'test'
-        hp, hc = waveform.get_fd_waveform(approximant=approximant, mass1=65, mass2=80, delta_f=1.0 / 4,
-                                                f_lower=40)
+        hp, hc = waveform.get_fd_waveform(approximant=approximant, mass1=65, mass2=80, delta_f=1.0 / 4, f_lower=40)
         return hp, hc
 
     @classmethod
@@ -50,6 +49,25 @@ class TimeDomain:
         plt.xlabel('$lg(f)$')
         plt.ylabel('$lg(h)$')
         plt.title('Standard polarization in frequency space')
+        plt.xlabel('Frequency (Hz)')
+        return plt.show()
+
+    @classmethod
+    def plot_TaylorF2(cls):
+        approximant = 'TaylorF2'
+        hp, _ = waveform.get_fd_waveform(approximant=approximant,
+                                         mass1=6, mass2=6,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
+                                         delta_f=1.0 / 4, f_lower=40)
+        return cls.plot_pycbc_ifft(approximant, hp)
+
+    @classmethod
+    def plot_TaylorF2_freq(cls):
+        approximant = 'TaylorF2'
+        hp, _ = waveform.get_fd_waveform(approximant=approximant,
+                                         mass1=6, mass2=6,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
+                                         delta_f=1.0 / 4, f_lower=40)
+        plt.plot(hp.sample_frequencies, np.log(hp))
+        plt.ylabel('Strain')
         plt.xlabel('Frequency (Hz)')
         return plt.show()
 
@@ -76,8 +94,8 @@ class TimeDomain:
         delta_f = 1.0 / 40
 
         # perform ifft
-        t_len = int(1.0 / delta_f / delta_t)
-        # hp = np.resize(hp, (int(t_len / 2 + 1))) # CANT USE NP RESIZE BC THEN ITS NOT A PYCBC ARRAY
+        t_len = int(1.0 / delta_t / delta_f)
+        hp.resize(t_len/2 + 1)
         sp = types.TimeSeries(types.zeros(t_len), delta_t=delta_t)
         fft.ifft(hp, sp)
 
