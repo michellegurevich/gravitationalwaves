@@ -15,21 +15,23 @@ def main():
 
     alpha = 3
     A_term = .0001
-    chirp_mass = 25  # kg
-    f = np.linspace(10e-5, 10e-1)  # Hz
+    # chirp_mass = 25 * 4.925 * 10e-6 # 25 solar masses
+    delta_f = 1/70
+    f = np.linspace(30, 100, int(70 / delta_f))
     f_cut = 10e-1
-    m_1 = 6
-    m_2 = 6
+    m_1 = 30 * 4.925 * 10e-6
+    m_2 = 30 * 4.925 * 10e-6
 
     P = Plots()
     # P.modified_polarization(f, f_cut, z_max, z, alpha, A_term, chirp_mass, m_1, m_2)
-    # P.standard_polarization(f, z_max, z, chirp_mass, m_1, m_2)
-
+    P.standard_polarization(f, z_max, z, m_1, m_2)
 
     TD = TimeDomain()
 
     # plot frequency of TaylorF2
     TD.plot_TaylorF2_freq()
+
+    # plot ifft of TaylorF2
     TD.plot_TaylorF2()
 
     # register test waveform to pycbc fd collection
