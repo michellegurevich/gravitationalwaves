@@ -12,13 +12,11 @@ from Plots import Plots
 def main():
     z_max = 4
     z = np.linspace(0, z_max)
-
-    alpha = 3
-    A_term = .0001
-    # chirp_mass = 25 * 4.925 * 10e-6 # 25 solar masses
+    # alpha = 3
+    # A_term = .0001
     delta_f = 1/70
     f = np.linspace(30, 100, int(70 / delta_f))
-    f_cut = 10e-1
+    # f_cut = 10e-1
     m_1 = 30 * 4.925 * 10e-6
     m_2 = 30 * 4.925 * 10e-6
 
@@ -41,11 +39,9 @@ def main():
     hp, hc = TD.get_test_waveform()
 
     # plot strain against frequency
-    plt.figure(1)
     TD.plot_test_waveform(hp, hc, f)
 
     # perform ifft to plot strain against time
-    plt.figure(2)
     TD.plot_pycbc_ifft('test', hp)
 
 
