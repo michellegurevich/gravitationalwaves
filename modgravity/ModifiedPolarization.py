@@ -93,12 +93,12 @@ class ModifiedPolarization:
     @classmethod
     def psi_gr(cls, f, z_max, m_1, m_2):
         freq_term = 2 * math.pi * f * cls.t_c
-        table_coefficient_terms = cls.psi_gr_numerical_coefficients(f, z_max, m_1, m_2)
-        numerical_term = 3 / 128 * (cls.u(f, m_1, m_2) ** -5 / 3) * table_coefficient_terms
-        return freq_term - cls.phi_c - math.pi / 4 + numerical_term
+        mass_term = 3 / 128 * ((cls.u(f, m_1, m_2) ** -5 / 3) * cls.psi_gr_numcfs(f, z_max, m_1, m_2))
+        # return freq_term - cls.phi_c - math.pi / 4
+        return freq_term - cls.phi_c - math.pi / 4 + mass_term
 
     @classmethod
-    def psi_gr_numerical_coefficients(cls, f, z_max, m_1, m_2):
+    def psi_gr_numcfs(cls, f, z_max, m_1, m_2):
         chirp_mass = cls.chirp_mass(m_1, m_2)
         v = cls.u(f, m_1, m_2) ** (1/3)
         v_lso = cls.v_lso()
@@ -138,20 +138,18 @@ class ModifiedPolarization:
 
     @classmethod
     def std_polarization_array(cls, f, z_max, z, m_1, m_2):
-        """ assigns the LOG OF VALUE (for plotting purposes) of the product of standard amplitude and exp(i*psi_GR) to
-        an array whose length corresponds to that of psi """
+        """ assigns the product of amplitude and exp(i*psi_GR) to an array with length that of psi """
         arr = []
 
         for i in range(len(f)):
             h = cls.curved_A(z_max, z, m_1, m_2) * np.exp(1j * cls.psi_gr(f[i], z_max, m_1, m_2))
             arr.append(h)
 
-        return [arr[i].real for i in range(len(f))], [arr[i].imag for i in range(len(f))]
+        return [arr[i].real for i in range(len(f))], [arr[j].imag for j in range(len(f))]
 
     @classmethod
     def mod_polarization_array(cls, f, f_cut, z_max, z, alpha, A_term, m_1, m_2):
-        """ assigns the LOG OF VALUE (for plotting purposes) of the product of modified amplitude and exp(i*psi) to an
-        array whose length corresponds to that of psi """
+        """ assigns the product of modified amplitude and exp(i*psi_[GR+dGR]) to an array with length that of psi """
         chirp_mass = cls.chirp_mass(m_1, m_2)
         arr = []
         for i in range(50):
@@ -160,7 +158,7 @@ class ModifiedPolarization:
                 if f[i] < f_cut else 0
             arr.append(h_tilde)
 
-        return [arr[i].real for i in range(50)], [arr[i].imag for i in range(50)]
+        return [arr[i].real for i in range(50)], [arr[j].imag for j in range(50)]
 
     """ do not calculate f_dot and set equal to zero to recover max value attained by f
     @classmethod

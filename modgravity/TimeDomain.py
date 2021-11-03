@@ -11,46 +11,40 @@ from ModifiedPolarization import ModifiedPolarization
 
 
 class TimeDomain:
-
+    m_1 = 30 * 4.925 * 10e-6
+    m_2 = 30 * 4.925 * 10e-6
+    df = 1 / 70
+    f = np.linspace(30, 100, int(70 / df))
+    z_max = 4
 
     def __init__(self):
         pass
 
     @classmethod
     def test_waveform(cls, **args):
-        mass_1 = args['mass1']
-        mass_2 = args['mass2']
         df = args['delta_f']
         flow = args['f_lower']
-        f = np.linspace(30, 100, int(70 / df))
-        # t = f / f.max() * (tpeak - tlow) + tlow
-        offset = - len(f) * df
+
         MP = ModifiedPolarization()
-
-        wf = MP.std_polarization_array(f, 4, np.linspace(0, 4), mass_1, mass_2)
-        wf_real = FrequencySeries(wf[0], delta_f=df, epoch=offset)
-        wf_imag = FrequencySeries(wf[1], delta_f=df, epoch=offset)
-        return wf_real, wf_imag
-
-    @classmethod
-    def register_test_waveform(cls):
-        approximant = 'test'
-        return waveform.add_custom_waveform(approximant, cls.test_waveform, 'frequency', force=True)
+        offset = - len(cls.f) * df
+        wf, wp = MP.std_polarization_array(cls.f, cls.z_max, np.linspace(0, cls.z_max), cls.m_1, cls.m_2)
+        wf = FrequencySeries(wf, delta_f=df, epoch=offset)
+        wp = FrequencySeries(wp, delta_f=df, epoch=offset)
+        return wf, wp
 
     @classmethod
-    def get_test_waveform(cls):
-        approximant = 'test'
-        hp, hc = waveform.get_fd_waveform(approximant=approximant, mass1=65, mass2=80, delta_f=1.0 / 70, f_lower=40)
-        return hp, hc
+    def plot_test_waveform(cls):
+        # register test waveform to pycbc dictionary
+        waveform.add_custom_waveform('test', cls.test_waveform, 'frequency', force=True)
 
-    @classmethod
-    def plot_test_waveform(cls, hp, hc, f):
-        plt.plot(f, hc)  # plot imag values
-        plt.xlabel('$lg(f)$')
-        plt.ylabel('$lg(h)$')
-        plt.title('Standard polarization in frequency space')
+        # get test waveform from pycbc dictionary
+        hp, hc = waveform.get_fd_waveform(approximant='test', delta_f=cls.df, f_lower=40)
+
+        # plot (either real or imag values of) test waveform in frequency space
+        plt.plot(cls.f, hp)  # plot real values
         plt.xlabel('Frequency (Hz)')
-        return plt.show()
+        plt.ylabel('Strain')
+        return hp, hc
 
     @classmethod
     def plot_TaylorF2(cls):
@@ -69,15 +63,7 @@ class TimeDomain:
         plt.plot(hp.sample_frequencies, hp)
         plt.ylabel('Strain')
         plt.xlabel('Frequency (Hz)')
-        return plt.show()
-
-    @classmethod
-    def plot_TaylorF2(cls):
-        approximant = 'TaylorF2'
-        hp, _ = waveform.get_fd_waveform(approximant=approximant,
-                                         mass1=6, mass2=6,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
-                                         delta_f=1.0 / 4, f_lower=40)
-        return cls.plot_pycbc_ifft(approximant, hp)
+        return plt
 
     @classmethod
     def plot_IMRPhenomA(cls):
@@ -101,8 +87,8 @@ class TimeDomain:
         fft.ifft(hp, sp)
 
         # plot strain in time domain
-        plt.plot(sp.sample_times, sp, label=approximant + ' IFFT)')
+        plt.plot(sp.sample_times, sp, label=approximant + ' (IFFT)')
         plt.ylabel('Strain')
         plt.xlabel('Time (s)')
         plt.legend()
-        return plt.show()
+        return plt
