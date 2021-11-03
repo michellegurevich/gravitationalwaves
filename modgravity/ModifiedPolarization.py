@@ -85,10 +85,9 @@ class ModifiedPolarization:
         return math.sqrt(math.pi / 30) * (chirp_mass ** 2 / D_L)
 
     @classmethod
-    def mod_amplitude(cls, f, z_max, z):
+    def mod_amplitude(cls, f, z_max, z, m_1, m_2):
         """ A~(f) term """
-        chirp_mass = cls.chirp_mass(m_1, m_2)
-        return cls.epsilon * cls.curved_A(z_max, z, chirp_mass) * (cls.u(f, chirp_mass) ** (-7 / 6))
+        return cls.epsilon * cls.curved_A(z_max, z, m_1, m_2) * (cls.u(f, m_1, m_2) ** (-7 / 6))
 
     @classmethod
     def psi_gr(cls, f, z_max, m_1, m_2):
@@ -140,9 +139,10 @@ class ModifiedPolarization:
     def std_polarization_array(cls, f, z_max, z, m_1, m_2):
         """ assigns the product of amplitude and exp(i*psi_GR) to an array with length that of psi """
         arr = []
+        a_tilde = cls.mod_amplitude(f, z_max, z, m_1, m_2)
 
         for i in range(len(f)):
-            h = cls.curved_A(z_max, z, m_1, m_2) * np.exp(1j * cls.psi_gr(f[i], z_max, m_1, m_2))
+            h = a_tilde[i] * np.exp(1j * cls.psi_gr(f[i], z_max, m_1, m_2))
             arr.append(h)
 
         return [arr[i].real for i in range(len(f))], [arr[j].imag for j in range(len(f))]

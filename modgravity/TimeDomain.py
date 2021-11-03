@@ -13,8 +13,8 @@ from ModifiedPolarization import ModifiedPolarization
 class TimeDomain:
     m_1 = 30 * 4.925 * 10e-6
     m_2 = 30 * 4.925 * 10e-6
-    df = 1 / 70
-    f = np.linspace(30, 100, int(70 / df))
+    df = 1 / 320
+    f = np.linspace(30, 350, int(320 / df))
     z_max = 4
 
     def __init__(self):
@@ -51,7 +51,7 @@ class TimeDomain:
         approximant = 'TaylorF2'
         hp, _ = waveform.get_fd_waveform(approximant=approximant,
                                          mass1=6, mass2=6,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
-                                         delta_f=1.0 / 4, f_lower=40)
+                                         delta_f=cls.df, f_lower=40)
         return cls.plot_pycbc_ifft(approximant, hp)
 
     @classmethod
@@ -59,7 +59,7 @@ class TimeDomain:
         approximant = 'TaylorF2'
         hp, _ = waveform.get_fd_waveform(approximant=approximant,
                                          mass1=6, mass2=6,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
-                                         delta_f=1.0 / 4, f_lower=40)
+                                         delta_f=cls.df, f_lower=40)
         plt.plot(hp.sample_frequencies, hp)
         plt.ylabel('Strain')
         plt.xlabel('Frequency (Hz)')
@@ -77,7 +77,7 @@ class TimeDomain:
     def plot_pycbc_ifft(cls, approximant, hp):
         """ gets the frequency domain waveform for a signal and perform ifft to plot over time domain """
         delta_t = 1.0 / 4096
-        delta_f = 1.0 / 70
+        delta_f = cls.df
 
         # perform ifft
         t_len = int(1.0 / delta_t / delta_f)
