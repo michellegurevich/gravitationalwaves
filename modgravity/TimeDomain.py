@@ -41,10 +41,11 @@ class TimeDomain:
         hp, hc = waveform.get_fd_waveform(approximant='test', delta_f=cls.df, f_lower=40)
 
         # plot (either real or imag values of) test waveform in frequency space
-        plt.plot(cls.f, hp)  # plot real values
-        plt.xlabel('Frequency (Hz)')
-        plt.ylabel('Strain')
-        return hp, hc
+        #plt.plot(cls.f, hp)  # plot real values
+        #plt.xlabel('Frequency (Hz)')
+        #plt.ylabel('Strain')
+        #return hp, hc
+        return cls.plot_pycbc_ifft('test', hp)
 
     @classmethod
     def plot_TaylorF2(cls):
@@ -81,9 +82,9 @@ class TimeDomain:
 
         # perform ifft
         t_len = int(1.0 / delta_t / delta_f)
-        hp.resize(t_len/2 + 1)
+        # hp.resize(t_len/2 + 1)
 
-        sp = types.TimeSeries(types.zeros(t_len), delta_t=delta_t)
+        sp = types.TimeSeries(types.zeros(hp.__len__()), delta_t=delta_t)
         fft.ifft(hp, sp)
 
         # plot strain in time domain

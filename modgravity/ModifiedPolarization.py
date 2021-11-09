@@ -30,6 +30,7 @@ class ModifiedPolarization:
     @classmethod
     def u(cls, f, m_1, m_2):
         chirp_mass = cls.chirp_mass(m_1, m_2)
+        # print(chirp_mass)
         return math.pi * chirp_mass * f
 
     @classmethod
@@ -93,7 +94,6 @@ class ModifiedPolarization:
     def psi_gr(cls, f, z_max, m_1, m_2):
         freq_term = 2 * math.pi * f * cls.t_c
         mass_term = 3 / 128 * ((cls.u(f, m_1, m_2) ** -5 / 3) * cls.psi_gr_numcfs(f, z_max, m_1, m_2))
-        # return freq_term - cls.phi_c - math.pi / 4
         return freq_term - cls.phi_c - math.pi / 4 + mass_term
 
     @classmethod
