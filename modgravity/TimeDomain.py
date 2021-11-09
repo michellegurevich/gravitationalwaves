@@ -82,13 +82,13 @@ class TimeDomain:
 
         # perform ifft
         t_len = int(1.0 / delta_t / delta_f)
-        # hp.resize(t_len/2 + 1)
+        hp.resize(t_len/2 + 1)  # COMMENTING THIS OUT BREAKS TAYLOR F2 BUT NOT TEST
 
-        sp = types.TimeSeries(types.zeros(hp.__len__()), delta_t=delta_t)
+        sp = types.TimeSeries(types.zeros(t_len), delta_t=delta_t)
         fft.ifft(hp, sp)
 
         # plot strain in time domain
-        plt.plot(sp.sample_times, sp, label=approximant + ' (IFFT)')
+        plt.plot(sp.sample_times, sp, label=approximant+' (IFFT)')
         plt.ylabel('Strain')
         plt.xlabel('Time (s)')
         plt.legend()

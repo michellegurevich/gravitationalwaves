@@ -17,11 +17,11 @@ def main():
     #TD.plot_TaylorF2_freq()
 
     # plot ifft of TaylorF2
-    #plt.subplot(2, 2, 2)
-    #TD.plot_TaylorF2()
+    plt.subplot(2, 2, 2)
+    TD.plot_TaylorF2()
 
     # plot strain against frequency
-    #plt.subplot(2, 2, 3)
+    plt.subplot(2, 2, 3)
     # hp, hc = TD.plot_test_waveform()
     TD.plot_test_waveform()
 
