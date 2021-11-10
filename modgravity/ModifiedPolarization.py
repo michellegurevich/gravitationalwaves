@@ -160,7 +160,10 @@ class ModifiedPolarization:
 
         return [arr[i].real for i in range(50)], [arr[j].imag for j in range(50)]
 
-    """ do not calculate f_dot and set equal to zero to recover max value attained by f
+    """ 
+    
+    do not calculate f_dot and set equal to zero to recover max value attained by f
+    
     @classmethod
     def calculate_f_max(cls, z):
         f_dot = cls.df_e_over_dt_e() / ((1 + z)**2)
@@ -175,4 +178,5 @@ class ModifiedPolarization:
         term_ii = math.pi * m * f_e
         term_i = (743/336 + 11/4 * eta) * (term_ii**(2/3))
         return factor * (1 - term_i + 4 * math.pi * term_ii)
+        
     """
