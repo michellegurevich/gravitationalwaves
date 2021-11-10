@@ -12,36 +12,12 @@ from ModifiedPolarization import ModifiedPolarization
 
 
 class TimeDomain:
+    # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
     m_1 = 30 * 4.925 * 10e-6
     m_2 = 30 * 4.925 * 10e-6
     df = 1 / 320
     f = np.linspace(30, 350, int(320 / df))
     z_max = 1
-
-    TaylorF2 = {
-        'approximant': 'TaylorF2',
-        'mass1': 6, 'mass2': 6,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
-        'delta_f': 1 / 320, 'f_lower': 40,
-    }
-
-    TaylorT2 = {
-        'approximant': 'TaylorT2',
-        'mass1': 6, 'mass2': 6,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
-        'delta_t': 1.0 / 4096
-    }
-
-    IMRPhenomA = {
-        'approximant': 'IMRPhenomA',
-        'mass1': 65, 'mass2': 80,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
-        'delta_f': 1 / 4, 'f_lower': 40,
-        'delta_t': 1.0 / 4096
-    }
-
-    test = {
-        'approximant': 'test',
-        'delta_f': 1 / 320, 'f_lower': 40,
-        'delta_t': 1.0 / 4096
-    }
 
     def __init__(self):
         pass
@@ -59,34 +35,38 @@ class TimeDomain:
         return wf, wp
 
     @classmethod
-    def get_test_waveform(cls):
+    def register_test_waveform(cls):
         """ register test waveform to pycbc dictionary """
         return waveform.add_custom_waveform('test', cls.test_waveform, 'frequency', force=True)
 
     @classmethod
-    def plot_td(cls, d):
-        """ plot pycbc waveform in time using dictionaries defined at beginning of file """
-        sp, sc = waveform.get_td_waveform(approximant=cls.d[approximant],
-                                         mass1=cls.d[mass1], mass2=cls.d[mass2],  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
-                                         delta_t=cls.d[delta_t])
+    def get_fd(cls, d):
+        hp, hc = waveform.get_fd_waveform(approximant=d['approximant'],
+                                         mass1=d['mass1'], mass2=d['mass2'],
+                                         delta_f=d['delta_f'], f_lower=d['f_lower'])
+        return hp, hc
 
-        plt.plot(sp.sample_times, np.abs(sp), label=approximant)
-        # plt.plot(sc.sample_times, np.abs(sc), label=approximant)
-        plt.xlabel('Time (s)')
+    @classmethod
+    def plot_fd(cls, hp, hc, d):
+        plt.plot(hp.sample_frequencies, hp, label=d['approximant'])
+        # plt.plot(hc.sample_frequencies, hc, label=d['approximant'])
+        plt.xlabel('Frequency (Hz)')
         plt.ylabel('Strain')
         plt.legend()
         return plt
 
     @classmethod
-    def plot_fd(cls, d):
-        """ plot pycbc waveform in frequency space using dictionaries defined at beginning of file """
-        hp, hc = waveform.get_fd_waveform(approximant=d[approximant],
-                                         mass1=d[mass1], mass2=d[mass2],  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
-                                         delta_f=d[delta_f], f_lower=d[f_lower])
+    def get_td(cls, d):
+        sp, sc = waveform.get_td_waveform(approximant=d['approximant'],
+                                          mass1=d['mass1'], mass2=d['mass2'],
+                                          delta_t=d['delta_t'], f_lower=d['f_lower'])
+        return sp, sc
 
-        plt.plot(hp.sample_frequencies, hp)
-        # plt.plot(hc.sample_frequencies, hc, label=approximant)
-        plt.xlabel('Frequency (Hz)')
+    @classmethod
+    def plot_td(cls, sp, sc, d):
+        plt.plot(sp.sample_times, np.abs(sp), label=d['approximant'])
+        # plt.plot(sc.sample_times, np.abs(sc), label=d['approximant'])
+        plt.xlabel('Time (s)')
         plt.ylabel('Strain')
         plt.legend()
         return plt
@@ -99,7 +79,7 @@ class TimeDomain:
 
         # perform ifft
         t_len = int(1.0 / delta_t / delta_f)
-        sptilde.resize(t_len / 2 + 1)  # COMMENTING THIS OUT BREAKS TAYLOR F2 BUT NOT TEST
+        sptilde.resize(t_len / 2 + 1)               # COMMENTING THIS OUT BREAKS TAYLOR F2 BUT NOT TEST
 
         sp = types.TimeSeries(types.zeros(t_len), delta_t=delta_t)
         fft.ifft(sptilde, sp)
