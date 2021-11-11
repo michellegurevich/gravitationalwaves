@@ -79,14 +79,17 @@ class TimeDomain:
 
         # perform ifft
         t_len = int(1.0 / delta_t / delta_f)
-        sptilde.resize(t_len / 2 + 1)               # COMMENTING THIS OUT BREAKS TAYLOR F2 BUT NOT TEST
+        # sptilde.resize(t_len / 2 + 1)               # COMMENTING THIS OUT BREAKS TAYLOR F2 BUT NOT TEST
 
+        # generate empty array of size t_len
         sp = types.TimeSeries(types.zeros(t_len), delta_t=delta_t)
+        # use pycbc ifft to get sample times
         fft.ifft(sptilde, sp)
-        # scipy.fft.ifft(sp)
+        # use scipy ifft to compute results
+        ifft = scipy.fft.irfft(sptilde.data)
 
         # plot strain in time domain
-        plt.plot(sp.sample_times, np.abs(sp), label=approximant+' (IFFT)')
+        plt.plot(sp.sample_times, np.abs(ifft), label=approximant+' (IFFT)')
         plt.ylabel('Strain')
         plt.xlabel('Time (s)')
         plt.legend()
