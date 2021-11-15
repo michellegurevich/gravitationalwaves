@@ -1,6 +1,7 @@
 import math
 import cmath
 import numpy as np
+from matplotlib import pyplot as plt
 
 from CalculateDistances import CalculateDistances
 
@@ -159,6 +160,33 @@ class ModifiedPolarization:
             arr.append(h_tilde)
 
         return [arr[i].real for i in range(50)], [arr[j].imag for j in range(50)]
+
+    @classmethod
+    def phase_check(cls):
+        m_1 = 30 * 4.925 * 10e-6
+        m_2 = 30 * 4.925 * 10e-6
+        df = 1 / 320
+        f = np.linspace(30, 350, int(320 / df))
+        z_max = 1
+
+        # calculate inner product
+        phi_r, phi_i = cls.std_polarization_array(f, z_max, np.linspace(0, z_max), m_1, m_2)
+        ip = np.lib.scimath.sqrt(phi_i * np.conj(phi_i))  # sqrt(-r) in R -> i*sqrt(r) in C
+        phase = phi_i / ip
+
+        # plot A(f) - which should equal inner product
+        plt.subplot(2, 1, 1)
+        plt.plot(f, ip)
+        plt.ylabel('Frequency (Hz)')
+        plt.xlabel('Amplitude')
+
+        # plot e^(i*Psi) - calculated as phi / mag(phi)
+        plt.subplot(2, 1, 2)
+        plt.plot(f, phase)
+        plt.ylabel('Frequency (Hz)')
+        plt.xlabel('Phase')
+
+        return plt.show()
 
     """ 
     
