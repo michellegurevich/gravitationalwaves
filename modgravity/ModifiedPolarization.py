@@ -93,9 +93,12 @@ class ModifiedPolarization:
 
     @classmethod
     def psi_gr(cls, f, z_max, m_1, m_2):
-        freq_term = 2 * math.pi * f * cls.t_c
+        # freq_term = 2 * math.pi * f * cls.t_c
+        freq_term = 2 * math.pi * cls.f_e * cls.t_c
         mass_term = 3 / 128 * ((cls.u(f, m_1, m_2) ** -5 / 3) * cls.psi_gr_numcfs(f, z_max, m_1, m_2))
         return freq_term - cls.phi_c - math.pi / 4 + mass_term
+        # return - cls.phi_c - math.pi / 4 + mass_term
+        # return freq_term
 
     @classmethod
     def psi_gr_numcfs(cls, f, z_max, m_1, m_2):
