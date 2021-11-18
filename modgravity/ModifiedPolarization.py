@@ -180,14 +180,14 @@ class ModifiedPolarization:
         # plot A(f) - which should equal inner product
         plt.subplot(2, 1, 1)
         plt.plot(f, ip)
-        plt.ylabel('Frequency (Hz)')
-        plt.xlabel('Amplitude')
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Amplitude')
 
         # plot e^(i*Psi) - calculated as phi / mag(phi)
         plt.subplot(2, 1, 2)
         plt.plot(f, phase)
-        plt.ylabel('Frequency (Hz)')
-        plt.xlabel('Phase')
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Phase')
 
         return plt.show()
 

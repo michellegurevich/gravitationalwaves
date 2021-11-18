@@ -16,7 +16,7 @@ def main():
     TaylorF2 = {
         'approximant': 'TaylorF2',
         'mass1': 6, 'mass2': 6,
-        'delta_f': 1 / 320, 'f_lower': 40,
+        'delta_f': 1.0 / 320, 'f_lower': 40,
     }
 
     TaylorT2 = {
@@ -29,14 +29,14 @@ def main():
     IMRPhenomA = {
         'approximant': 'IMRPhenomA',
         'mass1': 65, 'mass2': 80,
-        'delta_f': 1 / 4, 'f_lower': 40,
+        'delta_f': 1.0 / 4, 'f_lower': 40,
         'delta_t': 1.0 / 4096
     }
 
     test = {
         'approximant': 'test',
         'mass1': TD.m_1, 'mass2': TD.m_2,
-        'delta_f': 1 / 320, 'f_lower': 40,
+        'delta_f': 1.0 / 320, 'f_lower': 40,
         'delta_t': 1.0 / 4096
     }
 
@@ -62,7 +62,7 @@ def main():
 
     plt.show()
 
-    MP.phase_check()
+    # MP.phase_check()
 
 
 if __name__ == '__main__':
