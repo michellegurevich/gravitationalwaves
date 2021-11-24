@@ -15,13 +15,13 @@ def main():
 
     TaylorF2 = {
         'approximant': 'TaylorF2',
-        'mass1': 6, 'mass2': 6,
+        'mass1': 20, 'mass2': 25,
         'delta_f': 1.0 / 320, 'f_lower': 40,
     }
 
     TaylorT2 = {
         'approximant': 'TaylorT2',
-        'mass1': 6, 'mass2': 6,
+        'mass1': 20, 'mass2': 25,
         'delta_t': 1.0 / 4096,
         'f_lower': 40
     }
@@ -47,8 +47,9 @@ def main():
 
     # plot ifft of TaylorF2
     plt.subplot(2, 2, 2)
-    sp, sc = TD.get_td(TaylorT2)
-    TD.plot_td(sp, sc, TaylorT2)
+    # sp, sc = TD.get_td(TaylorT2)
+    # TD.plot_td(sp, sc, TaylorT2)
+    TD.plot_pycbc_ifft(TaylorF2)
 
     # plot strain against frequency
     plt.subplot(2, 2, 3)

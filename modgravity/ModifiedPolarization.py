@@ -10,7 +10,8 @@ class ModifiedPolarization:
     h = 1  # Planck constant
     f_e = 10 ** 4  # Hz
     lambda_g = 1.6 * 10 ** 16  # m
-    epsilon = math.sqrt(3) / 2  # for LISA, for LIGO would equal 1
+    epsilon = 1  # for LIGO
+    # epsilon = math.sqrt(3) / 2  # for LISA
 
     E_e = h * f_e
     m_g = h / lambda_g
@@ -162,7 +163,7 @@ class ModifiedPolarization:
                 if f[i] < f_cut else 0
             arr.append(h_tilde)
 
-        return [arr[i].real for i in range(50)], [arr[j].imag for j in range(50)]
+        return [arr[i].real for i in range(50)], [arr[j].imag * 1j for j in range(50)]
 
     @classmethod
     def phase_check(cls):

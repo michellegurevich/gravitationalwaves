@@ -13,8 +13,8 @@ from ModifiedPolarization import ModifiedPolarization
 
 class TimeDomain:
     # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
-    m_1 = 30 * 4.925 * 10e-6
-    m_2 = 30 * 4.925 * 10e-6
+    m_1 = 20 * 4.925 * 10e-6
+    m_2 = 25 * 4.925 * 10e-6
     # df = 1 / 320
     # f = np.linspace(30, 350, int(320 / df))
     z_max = 1
@@ -84,26 +84,11 @@ class TimeDomain:
         t_len = int(1.0 / delta_t / delta_f)
         sctilde.resize(t_len / 2 + 1)
 
-        # generate empty array of size t_len
-
-        # use pycbc ifft to get sample times
-        # fft.ifft(sptilde, sp)
+        # use pycbc ifft (with numpy as default backend) to get sample times
         sp = types.TimeSeries(types.zeros(t_len), delta_t=delta_t)
-
-        print(sctilde.delta_f)
-        print(sctilde.sample_frequencies)
-        print(sctilde.epoch)
-        print(sp.data)
-
         fft.ifft(sctilde, sp)
 
-        print(sp.data)
-
-        # use scipy ifft to compute results
-        # ifft = scipy.fft.irfft(sptilde.data)
-
         # plot strain in time domain
-        # plt.plot(np.linspace(-10, 10, 64), sp, label=approximant+' (IFFT)')
         plt.plot(sp.sample_times, np.abs(sp), label=d['approximant'] + ' (IFFT)')
         plt.ylabel('Strain')
         plt.xlabel('Time (s)')
