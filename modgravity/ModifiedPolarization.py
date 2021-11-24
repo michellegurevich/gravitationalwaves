@@ -149,7 +149,7 @@ class ModifiedPolarization:
             h = a_tilde[i] * np.exp(1j * cls.psi_gr(f[i], z_max, m_1, m_2))
             arr.append(h)
 
-        return [arr[i].real for i in range(len(f))], [arr[j].imag for j in range(len(f))]
+        return [arr[i].real for i in range(len(f))], [arr[j].imag * 1j for j in range(len(f))]
 
     @classmethod
     def mod_polarization_array(cls, f, f_cut, z_max, z, alpha, A_term, m_1, m_2):

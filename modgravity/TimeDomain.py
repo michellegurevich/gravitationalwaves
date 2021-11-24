@@ -78,11 +78,11 @@ class TimeDomain:
         sptilde, sctilde = cls.get_fd(d)
 
         delta_t = 1.0 / 4096
-        delta_f = sptilde.delta_f
+        delta_f = sctilde.delta_f
 
         # perform ifft
         t_len = int(1.0 / delta_t / delta_f)
-        sptilde.resize(t_len / 2 + 1)
+        sctilde.resize(t_len / 2 + 1)
 
         # generate empty array of size t_len
 
@@ -90,12 +90,12 @@ class TimeDomain:
         # fft.ifft(sptilde, sp)
         sp = types.TimeSeries(types.zeros(t_len), delta_t=delta_t)
 
-        print(sptilde.delta_f)
-        print(sptilde.sample_frequencies)
-        print(sptilde.epoch)
+        print(sctilde.delta_f)
+        print(sctilde.sample_frequencies)
+        print(sctilde.epoch)
         print(sp.data)
 
-        fft.ifft(sptilde, sp)
+        fft.ifft(sctilde, sp)
 
         print(sp.data)
 

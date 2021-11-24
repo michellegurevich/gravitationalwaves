@@ -58,7 +58,7 @@ def main():
 
     # perform ifft to plot strain against time
     plt.subplot(2, 2, 4)
-    TD.plot_pycbc_ifft(TaylorF2)
+    TD.plot_pycbc_ifft(test)
 
     plt.show()
 
