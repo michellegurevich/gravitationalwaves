@@ -22,6 +22,8 @@ class ModifiedPolarization:
     omega_m = .3
     omega_lambda = .7
 
+    CD = CalculateDistances()
+
     def __init__(self):
         pass
 
@@ -38,20 +40,18 @@ class ModifiedPolarization:
     @classmethod
     def beta(cls, z_max, z):
         chirp_mass = cls.chirp_mass(m_1, m_2)
-        CD = CalculateDistances()
-        D_0 = CD.alpha_dist(z_max, z, 0)
+        D_0 = cls.CD.alpha_dist(z_max, z, 0)
         return (math.pi ** 2 * D_0 * chirp_mass) / (cls.lambda_g ** 2 * (1 + z_max))
 
     @classmethod
     def zeta(cls, z_max, z, alpha, A_term):
         chirp_mass = cls.chirp_mass(m_1, m_2)
-        CD = CalculateDistances()
         lambda_A_term = cls.lambda_A_term(alpha, A_term)
         if alpha == 1:
-            D_1 = CD.alpha_dist(z_max, z, alpha)
+            D_1 = cls.CD.alpha_dist(z_max, z, alpha)
             zeta = (math.pi * D_1) / lambda_A_term
         else:
-            D_alpha = CD.alpha_dist(z_max, z, alpha)
+            D_alpha = cls.CD.alpha_dist(z_max, z, alpha)
             term_i = math.pi ** (2 - alpha) / (1 - alpha)
             term_ii = D_alpha / (lambda_A_term ** (2 - alpha))
             term_iii = (chirp_mass ** (1 - alpha)) / ((1 + z_max) ** (1 - alpha))
@@ -83,12 +83,11 @@ class ModifiedPolarization:
     @classmethod
     def curved_A(cls, z_max, z, m_1, m_2):
         chirp_mass = cls.chirp_mass(m_1, m_2)
-        CD = CalculateDistances()
-        D_L = CD.lum_dist(z_max, z)
+        D_L = cls.CD.lum_dist(z_max, z)
         return math.sqrt(math.pi / 30) * (chirp_mass ** 2 / D_L)
 
     @classmethod
-    def mod_amplitude(cls, f, z_max, z, m_1, m_2):
+    def amplitude(cls, f, z_max, z, m_1, m_2):
         """ A~(f) term """
         return cls.epsilon * cls.curved_A(z_max, z, m_1, m_2) * (cls.u(f, m_1, m_2) ** (-7 / 6))
 
@@ -144,7 +143,7 @@ class ModifiedPolarization:
     def std_polarization_array(cls, f, z_max, z, m_1, m_2):
         """ assigns the product of amplitude and exp(i*psi_GR) to an array with length that of psi """
         arr = []
-        a_tilde = cls.mod_amplitude(f, z_max, z, m_1, m_2)
+        a_tilde = cls.amplitude(f, z_max, z, m_1, m_2)
 
         for i in range(len(f)):
             h = a_tilde[i] * np.exp(1j * cls.psi_gr(f[i], z_max, m_1, m_2))
@@ -157,13 +156,14 @@ class ModifiedPolarization:
         """ assigns the product of modified amplitude and exp(i*psi_[GR+dGR]) to an array with length that of psi """
         chirp_mass = cls.chirp_mass(m_1, m_2)
         arr = []
-        for i in range(50):
-            h_tilde = np.log(cls.mod_amplitude(f[i], z_max, z, chirp_mass) *
-                             np.exp(1j * cls.psi(f[i], z_max, z, alpha, A_term, chirp_mass, m_1, m_2))) \
+        a_tilde = cls.amplitude(f, z_max, z, m_1, m_2)
+
+        for i in range(len(f)):
+            h_tilde = np.log(a_tilde[i] * np.exp(1j * cls.psi(f[i], z_max, z, alpha, A_term, chirp_mass, m_1, m_2))) \
                 if f[i] < f_cut else 0
             arr.append(h_tilde)
 
-        return [arr[i].real for i in range(50)], [arr[j].imag * 1j for j in range(50)]
+        return [arr[i].real for i in range(len(f))], [arr[j].imag * 1j for j in range(len(f))]
 
     @classmethod
     def phase_check(cls):

@@ -9,6 +9,9 @@ from ModifiedPolarization import ModifiedPolarization
 
 
 class Plots:
+    CD = CalculateDistances()
+    SC = SetCosmology()
+    MP = ModifiedPolarization()
 
     def __init__(self):
         pass
@@ -16,8 +19,7 @@ class Plots:
     @staticmethod
     def scale_factor(z):
         """ plot scale factor against redshift """
-        SC = SetCosmology()
-        hp = SC.get_hp(z)
+        hp = cls.SC.get_hp(z)
         plt.plot(z, hp)
         plt.xlabel('$z$')
         plt.ylabel('$H(t)$')
@@ -27,13 +29,11 @@ class Plots:
     @staticmethod
     def alpha_lum_ratios(z_max, z):
         """ plot ratios of (modified) alpha and (standard) luminosity distances against redshift """
-        results = []
-        CD = CalculateDistances()
-
         alpha_values = np.arange(0, 4.5, .5)  # alpha values end at 4, per GR tests paper specs
+
         for a in alpha_values:
-            lum_dist_array = CD.lum_dist_array(z_max, z)
-            alpha_dist_array = CD.alpha_dist_array(z_max, z, a)
+            lum_dist_array = cls.CD.lum_dist_array(z_max, z)
+            alpha_dist_array = cls.CD.alpha_dist_array(z_max, z, a)
             results = np.divide(alpha_dist_array[1:], lum_dist_array[1:])  # division by zero error, skip first element
             # results = np.insert(results, 0, 0, axis=None)
             plt.plot(np.hstack(z[1:]), np.hstack(results), label=r'$\alpha$ = '+str(a))
@@ -49,12 +49,10 @@ class Plots:
     @staticmethod
     def chi_to_mod_chi_ratio(z_max, z, m_g, E_e):
         """ plot the ratio of conformal distance chi with and without modification terms """
-        CD = CalculateDistances()
-
         alpha = 3
         eta_dsrt = 1 * 10e-35  # parameter of order of Planck length
-        chi = CD.chi_array(z_max, 0, 0, m_g, E_e)
-        mod_chi = CD.chi_array(z, alpha, .00002, m_g, E_e, 2, 10)
+        chi = cls.CD.chi_array(z_max, 0, 0, m_g, E_e)
+        mod_chi = cls.CD.chi_array(z, alpha, .00002, m_g, E_e, 2, 10)
         print(chi, mod_chi)
 
         plt.plot(z, chi / mod_chi)
@@ -67,14 +65,12 @@ class Plots:
     @staticmethod
     def modified_polarization(f, f_cut, z, z_max, alpha, A_term, chirp_mass, m_1, m_2):
         """ plot the modified polarization, h~(f), in frequency space """
-        MP = ModifiedPolarization()
-        h_tilde_real, h_tilde_imag = MP.mod_polarization_array(f, f_cut, z, z_max, alpha, A_term, chirp_mass, m_1, m_2)
+        htilde_real, _ = cls.MP.mod_polarization_array(f, f_cut, z, z_max, alpha, A_term, chirp_mass, m_1, m_2)
         """ f_em / f_obs = 1 + z => f (measured as defined in paper, aka f_obs) => define array of frequency values 
         spanning the expected range for LISA """
-        plt.plot(f, h_tilde_real)
-        # set scale to log for plot axes
-        plt.xscale('log')
-        plt.yscale('log')
+        plt.plot(f, htilde_real)
+        plt.xscale('log')  # set xscale to log for plot axes
+        plt.yscale('log')  # set yscale to log for plot axes
         plt.xlabel('$lg(f)$')
         plt.ylabel(r'log($\tilde{h}$)')
         plt.title('Modified polarization in frequency space')
@@ -83,12 +79,10 @@ class Plots:
     @staticmethod
     def standard_polarization(f, z_max, z, m_1, m_2):
         """ plot the standard polarization, h(f), in frequency space """
-        MP = ModifiedPolarization()
-        h_real, h_imag = MP.std_polarization_array(f, z_max, z, m_1, m_2)
+        h_real, h_imag = cls.MP.std_polarization_array(f, z_max, z, m_1, m_2)
         plt.plot(f, h_real)
-        # set scale to log for plot axes
-        plt.xscale('log')
-        plt.yscale('log')
+        plt.xscale('log')  # set xscale to log for plot axes
+        plt.yscale('log')  # set yscale to log for plot axes
         plt.xlabel('$lg(f)$')
         plt.ylabel('$lg(h)$')
         plt.title('Standard polarization in frequency space')

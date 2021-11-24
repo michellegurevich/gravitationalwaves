@@ -15,13 +15,13 @@ def main():
 
     TaylorF2 = {
         'approximant': 'TaylorF2',
-        'mass1': 20, 'mass2': 25,
-        'delta_f': 1.0 / 320, 'f_lower': 40,
+        'mass1': 10, 'mass2': 15,
+        'delta_f': 1.0 / 170, 'f_lower': 40,
     }
 
     TaylorT2 = {
         'approximant': 'TaylorT2',
-        'mass1': 20, 'mass2': 25,
+        'mass1': 10, 'mass2': 15,
         'delta_t': 1.0 / 4096,
         'f_lower': 40
     }

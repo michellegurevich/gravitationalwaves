@@ -13,11 +13,10 @@ from ModifiedPolarization import ModifiedPolarization
 
 class TimeDomain:
     # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
-    m_1 = 20 * 4.925 * 10e-6
-    m_2 = 25 * 4.925 * 10e-6
-    # df = 1 / 320
-    # f = np.linspace(30, 350, int(320 / df))
+    m_1 = 10 * 4.925 * 10e-6
+    m_2 = 15 * 4.925 * 10e-6
     z_max = 1
+    MP = ModifiedPolarization()
 
     def __init__(self):
         pass
@@ -27,10 +26,9 @@ class TimeDomain:
         df = args['delta_f']
         flow = args['f_lower']
 
-        MP = ModifiedPolarization()
-        f = np.linspace(30, 350, int(320 / df))
+        f = np.linspace(30, 200, int(170 / df))
         offset = - len(f) * df
-        wf, wp = MP.std_polarization_array(f, cls.z_max, np.linspace(0, cls.z_max), cls.m_1, cls.m_2)
+        wf, wp = cls.MP.std_polarization_array(f, cls.z_max, np.linspace(0, cls.z_max), cls.m_1, cls.m_2)
         wf = FrequencySeries(wf, delta_f=df, epoch=offset)
         wp = FrequencySeries(wp, delta_f=df, epoch=offset)
         return wf, wp
