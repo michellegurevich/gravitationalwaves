@@ -179,7 +179,7 @@ class ModifiedPolarization:
 
         # plot A(f) - which should equal inner product
         plt.subplot(2, 1, 1)
-        plt.plot(f, ip)
+        plt.plot(f, amplitude)
         plt.xlabel('Frequency (Hz)')
         plt.ylabel('Amplitude')
 

@@ -15,8 +15,8 @@ class TimeDomain:
     # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
     m_1 = 30 * 4.925 * 10e-6
     m_2 = 30 * 4.925 * 10e-6
-    df = 1 / 320
-    f = np.linspace(30, 350, int(320 / df))
+    # df = 1 / 320
+    # f = np.linspace(30, 350, int(320 / df))
     z_max = 1
 
     def __init__(self):
@@ -28,8 +28,9 @@ class TimeDomain:
         flow = args['f_lower']
 
         MP = ModifiedPolarization()
-        offset = - len(cls.f) * df
-        wf, wp = MP.std_polarization_array(cls.f, cls.z_max, np.linspace(0, cls.z_max), cls.m_1, cls.m_2)
+        f = np.linspace(30, 350, int(320 / df))
+        offset = - len(f) * df
+        wf, wp = MP.std_polarization_array(f, cls.z_max, np.linspace(0, cls.z_max), cls.m_1, cls.m_2)
         wf = FrequencySeries(wf, delta_f=df, epoch=offset)
         wp = FrequencySeries(wp, delta_f=df, epoch=offset)
         return wf, wp
@@ -72,10 +73,12 @@ class TimeDomain:
         return plt
 
     @classmethod
-    def plot_pycbc_ifft(cls, approximant, sptilde):
+    def plot_pycbc_ifft(cls, d):
         """ gets the frequency domain waveform for a signal and computes ifft to plot over time domain """
+        sptilde, sctilde = cls.get_fd(d)
+
         delta_t = 1.0 / 4096
-        delta_f = cls.df
+        delta_f = sptilde.delta_f
 
         # perform ifft
         t_len = int(1.0 / delta_t / delta_f)
@@ -84,33 +87,39 @@ class TimeDomain:
         # generate empty array of size t_len
 
         # use pycbc ifft to get sample times
-        sptilde = types.Array(np.ones([33], dtype=np.complex64))
-        sp = types.Array(np.zeros([64], dtype=np.float32))
         # fft.ifft(sptilde, sp)
-        # sp = types.TimeSeries(types.zeros(t_len), delta_t=delta_t)
+        sp = types.TimeSeries(types.zeros(t_len), delta_t=delta_t)
+
+        print(sptilde.delta_f)
+        print(sptilde.sample_frequencies)
+        print(sptilde.epoch)
+        print(sp.data)
+
         fft.ifft(sptilde, sp)
+
+        print(sp.data)
 
         # use scipy ifft to compute results
         # ifft = scipy.fft.irfft(sptilde.data)
 
         # plot strain in time domain
-        plt.plot(np.linspace(-10, 10, 64), np.abs(sp), label=approximant+' (IFFT)')
+        # plt.plot(np.linspace(-10, 10, 64), sp, label=approximant+' (IFFT)')
+        plt.plot(sp.sample_times, np.abs(sp), label=d['approximant'] + ' (IFFT)')
         plt.ylabel('Strain')
         plt.xlabel('Time (s)')
         plt.legend()
         return plt
 
-    """
-    
-    define waveform dicts and pass these through as args to a single fctn which has a switch statement to match 
-    relevant keywords with parameter values
+
+    ## define waveform dicts and pass these through as args to a single fctn which has a switch statement to match
+    ## relevant keywords with parameter values
     
     @classmethod
     def plot_TaylorF2(cls):
         approximant = 'TaylorF2'
         hp, _ = waveform.get_fd_waveform(approximant=approximant,
                                          mass1=6, mass2=6,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
-                                         delta_f=cls.df, f_lower=40)
+                                         delta_f=1/320, f_lower=40)
         return cls.plot_pycbc_ifft(approximant, hp)
 
     @classmethod
@@ -120,5 +129,3 @@ class TimeDomain:
                                          mass1=65, mass2=80,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
                                          delta_f=1.0 / 4, f_lower=40)
         return cls.plot_pycbc_ifft(approximant, hp)
-        
-    """
