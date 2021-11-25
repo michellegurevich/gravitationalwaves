@@ -146,51 +146,10 @@ class ModifiedPolarization:
         a_tilde = cls.amplitude(f, z_max, z, m_1, m_2)
 
         for i in range(len(f)):
-            h = a_tilde[i] * np.exp(1j * cls.psi_gr(f[i], z_max, m_1, m_2))
+            h = cls.amplitude(f[i], z_max, z, m_1, m_2) * np.exp(1j * cls.psi_gr(f[i], z_max, m_1, m_2))
             arr.append(h)
 
         return [arr[i].real for i in range(len(f))], [arr[j].imag * 1j for j in range(len(f))]
-
-    @classmethod
-    def mod_polarization_array(cls, f, f_cut, z_max, z, alpha, A_term, m_1, m_2):
-        """ assigns the product of modified amplitude and exp(i*psi_[GR+dGR]) to an array with length that of psi """
-        chirp_mass = cls.chirp_mass(m_1, m_2)
-        arr = []
-        a_tilde = cls.amplitude(f, z_max, z, m_1, m_2)
-
-        for i in range(len(f)):
-            h_tilde = np.log(a_tilde[i] * np.exp(1j * cls.psi(f[i], z_max, z, alpha, A_term, chirp_mass, m_1, m_2))) \
-                if f[i] < f_cut else 0
-            arr.append(h_tilde)
-
-        return [arr[i].real for i in range(len(f))], [arr[j].imag * 1j for j in range(len(f))]
-
-    @classmethod
-    def phase_check(cls):
-        m_1 = 30 * 4.925 * 10e-6
-        m_2 = 30 * 4.925 * 10e-6
-        df = 1 / 320
-        f = np.linspace(30, 350, int(320 / df))
-        z_max = 1
-
-        # calculate inner product
-        phi_r, phi_i = cls.std_polarization_array(f, z_max, np.linspace(0, z_max), m_1, m_2)
-        ip = np.lib.scimath.sqrt(phi_i * np.conj(phi_i))  # sqrt(-r) in R -> i*sqrt(r) in C
-        phase = phi_i / ip
-
-        # plot A(f) - which should equal inner product
-        plt.subplot(2, 1, 1)
-        plt.plot(f, amplitude)
-        plt.xlabel('Frequency (Hz)')
-        plt.ylabel('Amplitude')
-
-        # plot e^(i*Psi) - calculated as phi / mag(phi)
-        plt.subplot(2, 1, 2)
-        plt.plot(f, phase)
-        plt.xlabel('Frequency (Hz)')
-        plt.ylabel('Phase')
-
-        return plt.show()
 
     """ 
     

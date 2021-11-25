@@ -6,12 +6,14 @@ import math
 from CalculateDistances import CalculateDistances
 from SetCosmology import SetCosmology
 from ModifiedPolarization import ModifiedPolarization
+from Model import Model
 
 
 class Plots:
     CD = CalculateDistances()
     SC = SetCosmology()
     MP = ModifiedPolarization()
+    Model = Model()
 
     def __init__(self):
         pass
@@ -65,7 +67,7 @@ class Plots:
     @staticmethod
     def modified_polarization(f, f_cut, z, z_max, alpha, A_term, chirp_mass, m_1, m_2):
         """ plot the modified polarization, h~(f), in frequency space """
-        htilde_real, _ = cls.MP.mod_polarization_array(f, f_cut, z, z_max, alpha, A_term, chirp_mass, m_1, m_2)
+        htilde_real, _ = cls.Model.mod_polarization_array(f, f_cut, z, z_max, alpha, A_term, chirp_mass, m_1, m_2)
         """ f_em / f_obs = 1 + z => f (measured as defined in paper, aka f_obs) => define array of frequency values 
         spanning the expected range for LISA """
         plt.plot(f, htilde_real)
@@ -86,4 +88,31 @@ class Plots:
         plt.xlabel('$lg(f)$')
         plt.ylabel('$lg(h)$')
         plt.title('Standard polarization in frequency space')
+        return plt.show()
+
+    @staticmethod
+    def phase_check():
+        m_1 = 30 * 4.925 * 10e-6
+        m_2 = 30 * 4.925 * 10e-6
+        df = 1 / 320
+        f = np.linspace(30, 350, int(320 / df))
+        z_max = 1
+
+        # calculate inner product
+        phi_r, phi_i = MP.std_polarization_array(f, z_max, np.linspace(0, z_max), m_1, m_2)
+        ip = np.lib.scimath.sqrt(phi_i * np.conj(phi_i))  # sqrt(-r) in R -> i*sqrt(r) in C
+        phase = phi_i / ip
+
+        # plot A(f) - which should equal inner product
+        plt.subplot(2, 1, 1)
+        plt.plot(f, ip)
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Amplitude')
+
+        # plot e^(i*Psi) - calculated as phi / mag(phi)
+        plt.subplot(2, 1, 2)
+        plt.plot(f, phase)
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Phase')
+
         return plt.show()

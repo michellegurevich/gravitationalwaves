@@ -93,22 +93,25 @@ class TimeDomain:
         plt.legend()
         return plt
 
-
-    ## define waveform dicts and pass these through as args to a single fctn which has a switch statement to match
-    ## relevant keywords with parameter values
+    """ 
     
-    @classmethod
-    def plot_TaylorF2(cls):
-        approximant = 'TaylorF2'
-        hp, _ = waveform.get_fd_waveform(approximant=approximant,
-                                         mass1=6, mass2=6,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
-                                         delta_f=1/320, f_lower=40)
-        return cls.plot_pycbc_ifft(approximant, hp)
+    define waveform dicts and pass these through as args to a single fctn which has a switch statement to match
+    relevant keywords with parameter values
+   
+   @classmethod
+   def plot_TaylorF2(cls):
+       approximant = 'TaylorF2'
+       hp, _ = waveform.get_fd_waveform(approximant=approximant,
+                                        mass1=6, mass2=6,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
+                                        delta_f=1/320, f_lower=40)
+       return cls.plot_pycbc_ifft(approximant, hp)
 
-    @classmethod
-    def plot_IMRPhenomA(cls):
-        approximant = 'IMRPhenomA'
-        hp, _ = waveform.get_fd_waveform(approximant=approximant,
-                                         mass1=65, mass2=80,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
-                                         delta_f=1.0 / 4, f_lower=40)
-        return cls.plot_pycbc_ifft(approximant, hp)
+   @classmethod
+   def plot_IMRPhenomA(cls):
+       approximant = 'IMRPhenomA'
+       hp, _ = waveform.get_fd_waveform(approximant=approximant,
+                                        mass1=65, mass2=80,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
+                                        delta_f=1.0 / 4, f_lower=40)
+       return cls.plot_pycbc_ifft(approximant, hp)
+       
+   """
