@@ -20,13 +20,24 @@ class Model:
         pass
 
     @classmethod
-    def get_waveforms(cls):
-        return 0
+    def get_waveform(cls):
+        return cls.pycbc_wf
 
     @classmethod
-    def decompose_waveform(cls, wf):
+    def get_params(cls):
+        f = np.linspace(30, 200, int(170 / df))
+        z_max = 1
+        z = np.linspace(0, z_max)
+        return f, z_max, z
+
+    @classmethod
+    def decompose_waveform(cls):
+        # get waveform and parameters
+        wf = cls.get_waveform()
+        f, z_max, z = cls.get_params()
+
         # calculate inner product
-        phi_r, phi_i = cls.std_polarization_array(f, z_max, np.linspace(0, z_max), m_1, m_2)
+        phi_r, phi_i = MP.std_polarization_array(f, z_max, z, wf['mass1'], wf['mass2'])
         ip = np.lib.scimath.sqrt(phi_i * np.conj(phi_i))  # sqrt(-r) in R -> i*sqrt(r) in C
         phase = phi_i / amplitude
         return ip, phase
