@@ -33,11 +33,13 @@ class Model:
 
     @classmethod
     def perform_modification(cls, f, z_max, z, alpha, A_term):
+        m_1 = cls.pycbc_wf['mass1']
+        m_2 = cls.pycbc_wf['mass2']
         amplitude, std_phase = cls.decompose_waveform(wf)
         mod_phase = []
 
         for i in range(len(f)):
-            d_phase = MP.delta_psi(f[i], z_max, z, alpha, A_term)
+            d_phase = MP.delta_psi(f[i], z_max, z, alpha, A_term, m_1, m_2)
             mod_phase.append(std_phase + d_phase[i])
 
         return amplitude, mod_phase
@@ -52,8 +54,7 @@ class Model:
         arr = []
 
         for i in range(len(f)):
-            h_tilde = np.log(a_tilde[i] * np.exp(1j * MP.psi(f[i], z_max, z, alpha, A_term, chirp_mass, m_1, m_2))) \
-                if f[i] < f_cut else 0
+            h_tilde = amplitude * np.exp(1j * mod_phase) if f[i] < f_cut else 0
             arr.append(h_tilde)
 
         return [arr[i].real for i in range(len(f))], [arr[j].imag * 1j for j in range(len(f))]

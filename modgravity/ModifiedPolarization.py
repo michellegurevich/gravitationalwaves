@@ -93,12 +93,9 @@ class ModifiedPolarization:
 
     @classmethod
     def psi_gr(cls, f, z_max, m_1, m_2):
-        # freq_term = 2 * math.pi * f * cls.t_c
         freq_term = 2 * math.pi * cls.f_e * cls.t_c
         mass_term = 3 / 128 * ((cls.u(f, m_1, m_2) ** -5 / 3) * cls.psi_gr_numcfs(f, z_max, m_1, m_2))
         return freq_term - cls.phi_c - math.pi / 4 + mass_term
-        # return - cls.phi_c - math.pi / 4 + mass_term
-        # return freq_term
 
     @classmethod
     def psi_gr_numcfs(cls, f, z_max, m_1, m_2):
@@ -123,7 +120,7 @@ class ModifiedPolarization:
         return 1 + (v_2 * v**2) - (v_3 * v**3) + (v_4 * v**4) + (v_5 * v**5) + (v_6 * v**6) + (v_7 * v**7)
 
     @classmethod
-    def delta_psi(cls, f, z_max, z, alpha, A_term):
+    def delta_psi(cls, f, z_max, z, alpha, A_term, m_1, m_2):
         chirp_mass = cls.chirp_mass(m_1, m_2)
         term_i = cls.beta(z_max, z, chirp_mass) / cls.u(f, chirp_mass)
         if alpha == 1:
@@ -134,16 +131,14 @@ class ModifiedPolarization:
 
     @classmethod
     def psi(cls, f, z_max, z, alpha, A_term, m_1, m_2):
-        chirp_mass = cls.chirp_mass(m_1, m_2)
-        psi_gr = cls.psi_gr(f, z_max, chirp_mass, m_1, m_2)
-        delta_psi = cls.delta_psi(f, z_max, z, alpha, A_term, chirp_mass)
+        psi_gr = cls.psi_gr(f, z_max, m_1, m_2)
+        delta_psi = cls.delta_psi(f, z_max, z, alpha, A_term, m_1, m_2)
         return psi_gr + delta_psi
 
     @classmethod
     def std_polarization_array(cls, f, z_max, z, m_1, m_2):
         """ assigns the product of amplitude and exp(i*psi_GR) to an array with length that of psi """
         arr = []
-        a_tilde = cls.amplitude(f, z_max, z, m_1, m_2)
 
         for i in range(len(f)):
             h = cls.amplitude(f[i], z_max, z, m_1, m_2) * np.exp(1j * cls.psi_gr(f[i], z_max, m_1, m_2))
