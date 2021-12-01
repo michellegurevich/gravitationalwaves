@@ -12,6 +12,7 @@ from Plots import Plots
 def main():
     TD = TimeDomain()
     MP = ModifiedPolarization()
+    M  = Model()
 
     TaylorF2 = {
         'approximant': 'TaylorF2',
@@ -40,30 +41,8 @@ def main():
         'delta_t': 1.0 / 4096
     }
 
-    # plot frequency of TaylorF2
-    plt.subplot(2, 2, 1)
-    hp, hc = TD.get_fd(TaylorF2)
-    TD.plot_fd(hp, hc, TaylorF2)
+    M.
 
-    # plot ifft of TaylorF2
-    plt.subplot(2, 2, 2)
-    # sp, sc = TD.get_td(TaylorT2)
-    # TD.plot_td(sp, sc, TaylorT2)
-    TD.plot_pycbc_ifft(TaylorF2)
-
-    # plot strain against frequency
-    plt.subplot(2, 2, 3)
-    TD.register_test_waveform()
-    kp, kc = TD.get_fd(test)
-    TD.plot_fd(kp, kc, test)
-
-    # perform ifft to plot strain against time
-    plt.subplot(2, 2, 4)
-    TD.plot_pycbc_ifft(test)
-
-    plt.show()
-
-    # MP.phase_check()
 
 
 if __name__ == '__main__':

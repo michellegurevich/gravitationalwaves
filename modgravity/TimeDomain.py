@@ -120,7 +120,7 @@ class TimeDomain:
     TD.plot_fd(hp, hc, TaylorF2)
 
     # plot ifft of TaylorF2
-    plt.subplot(2, 2, 2)
+    plt.subplot(2, 2, 2)g
     # sp, sc = TD.get_td(TaylorT2)
     # TD.plot_td(sp, sc, TaylorT2)
     TD.plot_pycbc_ifft(TaylorF2)
