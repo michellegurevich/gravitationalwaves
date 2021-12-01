@@ -7,12 +7,13 @@ from CalculateDistances import CalculateDistances
 from ModifiedPolarization import ModifiedPolarization
 from TimeDomain import TimeDomain
 from Plots import Plots
+from Model import Model
 
 
 def main():
     TD = TimeDomain()
     MP = ModifiedPolarization()
-    M  = Model()
+    M = Model()
 
     TaylorF2 = {
         'approximant': 'TaylorF2',
@@ -41,9 +42,19 @@ def main():
         'delta_t': 1.0 / 4096
     }
 
-    M.
+    wf = M.get_waveform()
+    f, z_max, z = M.get_params(wf)
+    #print(wf)
+    #print(f, z_max, z)
+    amplitude, std_phase = M.decompose_waveform(wf, f, z_max, z)
+    print(amplitude)
+    print(std_phase)
 
+    alpha = 4
+    A_term = .001
 
+    mod_amplitude, mod_phase = M.perform_modification(wf, std_phase, f, z_max, z, alpha, A_term)
+    print(mod_amplitude, mod_phase)
 
 if __name__ == '__main__':
     main()

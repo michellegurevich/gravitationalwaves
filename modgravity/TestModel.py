@@ -15,7 +15,7 @@ class TestModel(unittest.TestCase):
             'delta_f': 1.0 / 170, 'f_lower': 40,
         }
 
-        self.assertTrue(M.get_waveform() == pycbc_wf)
+        self.assertTrue(self.M.get_waveform() == pycbc_wf)
 
     #def test_decompose_waveform(self):
     #    self.assertEqual

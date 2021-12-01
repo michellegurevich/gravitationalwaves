@@ -24,33 +24,30 @@ class Model:
         return cls.pycbc_wf
 
     @classmethod
-    def get_params(cls):
+    def get_params(cls, wf):
+        df = wf['delta_f']
         f = np.linspace(30, 200, int(170 / df))
         z_max = 1
         z = np.linspace(0, z_max)
         return f, z_max, z
 
     @classmethod
-    def decompose_waveform(cls):
-        # get waveform and parameters
-        wf = cls.get_waveform()
-        f, z_max, z = cls.get_params()
-
+    def decompose_waveform(cls, wf, f, z_max, z):
         # calculate inner product
-        phi_r, phi_i = MP.std_polarization_array(f, z_max, z, wf['mass1'], wf['mass2'])
+        chirp_mass = cls.MP.chirp_mass(wf['mass1'], wf['mass2'])
+        phi_r, phi_i = cls.MP.std_polarization_array(f, z_max, z, chirp_mass)
         ip = np.lib.scimath.sqrt(phi_i * np.conj(phi_i))  # sqrt(-r) in R -> i*sqrt(r) in C
-        phase = phi_i / amplitude
+        phase = phi_i / ip
         return ip, phase
 
     @classmethod
-    def perform_modification(cls, f, z_max, z, alpha, A_term):
-        m_1 = cls.pycbc_wf['mass1']
-        m_2 = cls.pycbc_wf['mass2']
-        amplitude, std_phase = cls.decompose_waveform(wf)
+    def perform_modification(cls, wf, std_phase, f, z_max, z, alpha, A_term):
+        m_1 = wf['mass1']
+        m_2 = wf['mass2']
         mod_phase = []
 
         for i in range(len(f)):
-            d_phase = MP.delta_psi(f[i], z_max, z, alpha, A_term, m_1, m_2)
+            d_phase = cls.MP.delta_psi(f[i], z_max, z, alpha, A_term, m_1, m_2)
             mod_phase.append(std_phase + d_phase[i])
 
         return amplitude, mod_phase

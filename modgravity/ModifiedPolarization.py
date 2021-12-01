@@ -32,14 +32,11 @@ class ModifiedPolarization:
         return cls.h * A_term ** (1 / (alpha - 2))  # always has units of length irrespective of alpha value
 
     @classmethod
-    def u(cls, f, m_1, m_2):
-        chirp_mass = cls.chirp_mass(m_1, m_2)
-        # print(chirp_mass)
+    def u(cls, f, chirp_mass):
         return math.pi * chirp_mass * f
 
     @classmethod
-    def beta(cls, z_max, z):
-        chirp_mass = cls.chirp_mass(m_1, m_2)
+    def beta(cls, z_max, z, chirp_mass):
         D_0 = cls.CD.alpha_dist(z_max, z, 0)
         return (math.pi ** 2 * D_0 * chirp_mass) / (cls.lambda_g ** 2 * (1 + z_max))
 
@@ -69,7 +66,7 @@ class ModifiedPolarization:
         return chirp_mass / (1 + z_max)
 
     @classmethod
-    def m(cls, z_max, chirp_mass, m_1, m_2):
+    def m(cls, m_1, m_2):
         """ calculates symmetric mass ratio eta from source chirp mass and component masses; returns m and eta """
         eta = (m_1 * m_2) / ((m_1 + m_2) ** 2)
         return m_1 + m_2, eta
@@ -81,25 +78,23 @@ class ModifiedPolarization:
         return 1 / math.sqrt(6)
 
     @classmethod
-    def curved_A(cls, z_max, z, m_1, m_2):
-        chirp_mass = cls.chirp_mass(m_1, m_2)
+    def curved_A(cls, z_max, z, chirp_mass):
         D_L = cls.CD.lum_dist(z_max, z)
         return math.sqrt(math.pi / 30) * (chirp_mass ** 2 / D_L)
 
     @classmethod
-    def amplitude(cls, f, z_max, z, m_1, m_2):
+    def amplitude(cls, f, z_max, z, chirp_mass):
         """ A~(f) term """
-        return cls.epsilon * cls.curved_A(z_max, z, m_1, m_2) * (cls.u(f, m_1, m_2) ** (-7 / 6))
+        return cls.epsilon * cls.curved_A(z_max, z, chirp_mass) * (cls.u(f, chirp_mass) ** (-7 / 6))
 
     @classmethod
-    def psi_gr(cls, f, z_max, m_1, m_2):
+    def psi_gr(cls, f, z_max, chirp_mass):
         freq_term = 2 * math.pi * cls.f_e * cls.t_c
-        mass_term = 3 / 128 * ((cls.u(f, m_1, m_2) ** -5 / 3) * cls.psi_gr_numcfs(f, z_max, m_1, m_2))
+        mass_term = 3 / 128 * ((cls.u(f, chirp_mass) ** -5 / 3) * cls.psi_gr_numcfs(f, z_max, chirp_mass))
         return freq_term - cls.phi_c - math.pi / 4 + mass_term
 
     @classmethod
-    def psi_gr_numcfs(cls, f, z_max, m_1, m_2):
-        chirp_mass = cls.chirp_mass(m_1, m_2)
+    def psi_gr_numcfs(cls, f, z_max, chirp_mass):
         v = cls.u(f, m_1, m_2) ** (1/3)
         v_lso = cls.v_lso()
         _, eta = cls.m(z_max, chirp_mass, m_1, m_2)
@@ -120,8 +115,7 @@ class ModifiedPolarization:
         return 1 + (v_2 * v**2) - (v_3 * v**3) + (v_4 * v**4) + (v_5 * v**5) + (v_6 * v**6) + (v_7 * v**7)
 
     @classmethod
-    def delta_psi(cls, f, z_max, z, alpha, A_term, m_1, m_2):
-        chirp_mass = cls.chirp_mass(m_1, m_2)
+    def delta_psi(cls, f, z_max, z, alpha, A_term, chirp_mass):
         term_i = cls.beta(z_max, z, chirp_mass) / cls.u(f, chirp_mass)
         if alpha == 1:
             term_ii = cls.zeta(z_max, z, alpha, A_term, chirp_mass) * math.log(cls.u(f, chirp_mass))
@@ -130,18 +124,18 @@ class ModifiedPolarization:
         return -1 * (term_i + term_ii)
 
     @classmethod
-    def psi(cls, f, z_max, z, alpha, A_term, m_1, m_2):
-        psi_gr = cls.psi_gr(f, z_max, m_1, m_2)
-        delta_psi = cls.delta_psi(f, z_max, z, alpha, A_term, m_1, m_2)
+    def psi(cls, f, z_max, z, alpha, A_term, chirp_mass):
+        psi_gr = cls.psi_gr(f, z_max, chirp_mass)
+        delta_psi = cls.delta_psi(f, z_max, z, alpha, A_term, chirp_mass)
         return psi_gr + delta_psi
 
     @classmethod
-    def std_polarization_array(cls, f, z_max, z, m_1, m_2):
+    def std_polarization_array(cls, f, z_max, z, chirp_mass):
         """ assigns the product of amplitude and exp(i*psi_GR) to an array with length that of psi """
         arr = []
 
         for i in range(len(f)):
-            h = cls.amplitude(f[i], z_max, z, m_1, m_2) * np.exp(1j * cls.psi_gr(f[i], z_max, m_1, m_2))
+            h = cls.amplitude(f[i], z_max, z, chirp_mass) * np.exp(1j * cls.psi_gr(f[i], z_max, chirp_mass))
             arr.append(h)
 
         return [arr[i].real for i in range(len(f))], [arr[j].imag * 1j for j in range(len(f))]
