@@ -14,6 +14,7 @@ def main():
     TD = TimeDomain()
     MP = ModifiedPolarization()
     M = Model()
+    P = Plots()
 
     TaylorF2 = {
         'approximant': 'TaylorF2',
@@ -46,15 +47,19 @@ def main():
     f, z_max, z = M.get_params(wf)
     #print(wf)
     #print(f, z_max, z)
-    amplitude, std_phase = M.decompose_waveform(wf, f, z_max, z, wf['mass1'], wf['mass2'])
+    amplitude, std_phase = M.decompose_waveform(wf, f, z_max, z, wf['mass1'] * 4.925 * 10e-6, wf['mass2'] * 4.925 * 10e-6)
     print(amplitude)
     print(std_phase)
+
+    P.phase_check()
 
     alpha = 4
     A_term = .001
 
-    mod_phase = M.perform_modification(wf, std_phase, f, z_max, z, alpha, A_term)
-    print(mod_phase)
+    # mod_phase = M.perform_modification(wf, std_phase, f, z_max, z, alpha, A_term)
+    # print(mod_phase)
+
+
 
 if __name__ == '__main__':
     main()

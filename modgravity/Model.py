@@ -50,7 +50,7 @@ class Model:
 
         for i in range(len(f)):
             d_phase.append(cls.MP.delta_psi(f[i], z_max, z, alpha, A_term, chirp_mass))
-            mod_phase.append(std_phase + d_phase[i])
+            mod_phase.append(std_phase + d_phase)
 
         return mod_phase
 
