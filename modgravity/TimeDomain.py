@@ -113,5 +113,30 @@ class TimeDomain:
                                         mass1=65, mass2=80,  # m1 / m2 <= 4 and 50 <= M_e / M_sol <= 200
                                         delta_f=1.0 / 4, f_lower=40)
        return cls.plot_pycbc_ifft(approximant, hp)
-       
+
+    # plot frequency of TaylorF2
+    plt.subplot(2, 2, 1)
+    hp, hc = TD.get_fd(TaylorF2)
+    TD.plot_fd(hp, hc, TaylorF2)
+
+    # plot ifft of TaylorF2
+    plt.subplot(2, 2, 2)
+    # sp, sc = TD.get_td(TaylorT2)
+    # TD.plot_td(sp, sc, TaylorT2)
+    TD.plot_pycbc_ifft(TaylorF2)
+
+    # plot strain against frequency
+    plt.subplot(2, 2, 3)
+    TD.register_test_waveform()
+    kp, kc = TD.get_fd(test)
+    TD.plot_fd(kp, kc, test)
+
+    # perform ifft to plot strain against time
+    plt.subplot(2, 2, 4)
+    TD.plot_pycbc_ifft(test)
+
+    plt.show()
+
+    # MP.phase_check()
+
    """
