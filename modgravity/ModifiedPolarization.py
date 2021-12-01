@@ -41,8 +41,7 @@ class ModifiedPolarization:
         return (math.pi ** 2 * D_0 * chirp_mass) / (cls.lambda_g ** 2 * (1 + z_max))
 
     @classmethod
-    def zeta(cls, z_max, z, alpha, A_term):
-        chirp_mass = cls.chirp_mass(m_1, m_2)
+    def zeta(cls, z_max, z, alpha, A_term, chirp_mass):
         lambda_A_term = cls.lambda_A_term(alpha, A_term)
         if alpha == 1:
             D_1 = cls.CD.alpha_dist(z_max, z, alpha)
@@ -88,16 +87,17 @@ class ModifiedPolarization:
         return cls.epsilon * cls.curved_A(z_max, z, chirp_mass) * (cls.u(f, chirp_mass) ** (-7 / 6))
 
     @classmethod
-    def psi_gr(cls, f, z_max, chirp_mass):
+    def psi_gr(cls, f, z_max, chirp_mass, mass_1, mass_2):
         freq_term = 2 * math.pi * cls.f_e * cls.t_c
-        mass_term = 3 / 128 * ((cls.u(f, chirp_mass) ** -5 / 3) * cls.psi_gr_numcfs(f, z_max, chirp_mass))
+        mass_term = 3 / 128 * ((cls.u(f, chirp_mass) ** -5 / 3) * cls.psi_gr_numcfs(f, z_max, mass_1, mass_2))
         return freq_term - cls.phi_c - math.pi / 4 + mass_term
 
     @classmethod
-    def psi_gr_numcfs(cls, f, z_max, chirp_mass):
-        v = cls.u(f, m_1, m_2) ** (1/3)
+    def psi_gr_numcfs(cls, f, z_max, mass_1, mass_2):
+        chirp_mass = cls.chirp_mass(mass_1, mass_2)
+        v = cls.u(f, chirp_mass) ** (1/3)
         v_lso = cls.v_lso()
-        _, eta = cls.m(z_max, chirp_mass, m_1, m_2)
+        _, eta = cls.m(mass_1, mass_2)
         gamma = .577216  # euler mascheroni constant (dimensionless)
 
         v_2 = 20 / 9 * (743 / 336 + (11 / 4 * eta))
@@ -124,18 +124,19 @@ class ModifiedPolarization:
         return -1 * (term_i + term_ii)
 
     @classmethod
-    def psi(cls, f, z_max, z, alpha, A_term, chirp_mass):
-        psi_gr = cls.psi_gr(f, z_max, chirp_mass)
+    def psi(cls, f, z_max, z, alpha, A_term, chirp_mass, mass_1, mass_2):
+        psi_gr = cls.psi_gr(f, z_max, chirp_mass, mass_1, mass_2)
         delta_psi = cls.delta_psi(f, z_max, z, alpha, A_term, chirp_mass)
         return psi_gr + delta_psi
 
     @classmethod
-    def std_polarization_array(cls, f, z_max, z, chirp_mass):
+    def std_polarization_array(cls, f, z_max, z, chirp_mass, mass_1, mass_2):
         """ assigns the product of amplitude and exp(i*psi_GR) to an array with length that of psi """
         arr = []
 
         for i in range(len(f)):
-            h = cls.amplitude(f[i], z_max, z, chirp_mass) * np.exp(1j * cls.psi_gr(f[i], z_max, chirp_mass))
+            h = cls.amplitude(f[i], z_max, z, chirp_mass) * \
+                np.exp(1j * cls.psi_gr(f[i], z_max, chirp_mass, mass_1, mass_2))
             arr.append(h)
 
         return [arr[i].real for i in range(len(f))], [arr[j].imag * 1j for j in range(len(f))]

@@ -46,15 +46,15 @@ def main():
     f, z_max, z = M.get_params(wf)
     #print(wf)
     #print(f, z_max, z)
-    amplitude, std_phase = M.decompose_waveform(wf, f, z_max, z)
+    amplitude, std_phase = M.decompose_waveform(wf, f, z_max, z, wf['mass1'], wf['mass2'])
     print(amplitude)
     print(std_phase)
 
     alpha = 4
     A_term = .001
 
-    mod_amplitude, mod_phase = M.perform_modification(wf, std_phase, f, z_max, z, alpha, A_term)
-    print(mod_amplitude, mod_phase)
+    mod_phase = M.perform_modification(wf, std_phase, f, z_max, z, alpha, A_term)
+    print(mod_phase)
 
 if __name__ == '__main__':
     main()

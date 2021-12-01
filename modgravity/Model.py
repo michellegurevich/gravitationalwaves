@@ -32,10 +32,10 @@ class Model:
         return f, z_max, z
 
     @classmethod
-    def decompose_waveform(cls, wf, f, z_max, z):
+    def decompose_waveform(cls, wf, f, z_max, z, mass_1, mass_2):
         # calculate inner product
         chirp_mass = cls.MP.chirp_mass(wf['mass1'], wf['mass2'])
-        phi_r, phi_i = cls.MP.std_polarization_array(f, z_max, z, chirp_mass)
+        phi_r, phi_i = cls.MP.std_polarization_array(f, z_max, z, chirp_mass, mass_1, mass_2)
         ip = np.lib.scimath.sqrt(phi_i * np.conj(phi_i))  # sqrt(-r) in R -> i*sqrt(r) in C
         phase = phi_i / ip
         return ip, phase
@@ -44,13 +44,15 @@ class Model:
     def perform_modification(cls, wf, std_phase, f, z_max, z, alpha, A_term):
         m_1 = wf['mass1']
         m_2 = wf['mass2']
+        chirp_mass = cls.MP.chirp_mass(m_1, m_2)
+        d_phase = []
         mod_phase = []
 
         for i in range(len(f)):
-            d_phase = cls.MP.delta_psi(f[i], z_max, z, alpha, A_term, m_1, m_2)
+            d_phase.append(cls.MP.delta_psi(f[i], z_max, z, alpha, A_term, chirp_mass))
             mod_phase.append(std_phase + d_phase[i])
 
-        return amplitude, mod_phase
+        return mod_phase
 
     @classmethod
     def mod_polarization_array(cls, f, f_cut, z_max, z, alpha, A_term):
