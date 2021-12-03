@@ -55,6 +55,11 @@ class Model:
         return mod_phase
 
     @classmethod
+    def generate_modified_wf(cls, wf, amplitude, mod_phase):
+        modified_wf = [] # USE MOD_POL array below to recombine
+        return wf['approximant'], modified_wf
+
+    @classmethod
     def mod_polarization_array(cls, f, f_cut, z_max, z, alpha, A_term):
         """ assigns product of pycbc amplitude, exp( i * modified pycbc phase) to a list, returns real and imag
         components separately """

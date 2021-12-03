@@ -53,12 +53,16 @@ def main():
 
     P.phase_check()
 
+    # need to debug
     alpha = 4
     A_term = .001
 
-    # mod_phase = M.perform_modification(wf, std_phase, f, z_max, z, alpha, A_term)
-    # print(mod_phase)
+    mod_phase = M.perform_modification(wf, std_phase, f, z_max, z, alpha, A_term)
+    print(mod_phase)
 
+    # need to plot
+
+    M.generate_modified_wf(wf, amplitude, mod_phase)
 
 
 if __name__ == '__main__':
