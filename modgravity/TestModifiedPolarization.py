@@ -11,59 +11,59 @@ class TestModel(unittest.TestCase):
     def test_lambda_A_term(self):
         alpha = 4
         A_term = .001
-        actual = MP.lambda_A_term(alpha, A_term)
+        actual = self.MP.lambda_A_term(alpha, A_term)
         expected = 1 * A_term ** (1 / (alpha-2))
         self.assertEqual(actual, expected)
 
     def test_u(self):
-        actual = MP.u(f, chirp_mass)
+        actual = self.MP.u(f, chirp_mass)
         expected = 0
         self.assertEqual(actual, expected)
 
     def test_beta(self):
-        actual = MP.beta(z_max, z, chirp_mass)
+        actual = self.MP.beta(z_max, z, chirp_mass)
         expected = 0
         self.assertEqual(actual, expected)
 
     def test_zeta_if(self):
         """ case where alpha = 1 """
-        actual = MP.zeta(z_max, z, 1, A_term, chirp_mass)
+        actual = self.MP.zeta(z_max, z, 1, A_term, chirp_mass)
         expected = 0
         self.assertEqual(actual, expected)
 
     def test_zeta_else(self):
         """ case where alpha != 1 """
-        actual = MP.zeta(z_max, z, 2, A_term, chirp_mass)
+        actual = self.MP.zeta(z_max, z, 2, A_term, chirp_mass)
         expected = 0
         self.assertEqual(actual, expected)
 
     def test_chirp_mass(self):
-        actual = MP.chirp_mass(m_1, m_2)
+        actual = self.MP.chirp_mass(m_1, m_2)
         expected = 0
         self.assertEqual(actual, expected)
 
     def test_chirp_mass_e(self):
-        actual = MP.chirp_mass_e(z_max, chirp_mass)
+        actual = self.MP.chirp_mass_e(z_max, chirp_mass)
         expected = 0
         self.assertEqual(actual, expected)
 
     def test_m_sum(self):
-        actual, _ = MP.m(m_1, m_2)
+        actual, _ = self.MP.m(m_1, m_2)
         expected = 0
         self.assertEqual(actual, expected)
 
     def test_eta(self):
-        _, actual = MP.m(m_1, m_2)
+        _, actual = self.MP.m(m_1, m_2)
         expected = 0
         self.assertEqual(actual, expected)
 
     def test_v_lso(self):
-        actual = MP.v_lso()
+        actual = self.MP.v_lso()
         expected = 1 / math.sqrt(6)
         self.assertEqual(actual, expected)
 
     def test_curved_A(self):
-        actual = MP.curved_A(z_max, x, chirp_mass)
+        actual = self.MP.curved_A(z_max, x, chirp_mass)
         expected = 0
         self.assertEqual(actual, expected)
 
