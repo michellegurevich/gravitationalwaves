@@ -91,7 +91,7 @@ class ModifiedPolarization:
         freq_term = 2 * math.pi * cls.f_e * cls.t_c
         mass_term = 3 / 128 * ((cls.u(f, chirp_mass) ** -5 / 3) * cls.psi_gr_numcfs(f, z_max, mass_1, mass_2))
         return freq_term - cls.phi_c - math.pi / 4 + mass_term
-
+8
     @classmethod
     def psi_gr_numcfs(cls, f, z_max, mass_1, mass_2):
         chirp_mass = cls.chirp_mass(mass_1, mass_2)
