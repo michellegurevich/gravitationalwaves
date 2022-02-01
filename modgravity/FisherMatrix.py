@@ -16,6 +16,11 @@ class FisherMatrix:
 
     @classmethod
     def get_signal(cls, alpha, A_term):
+        ''' add pass through for other parameters for modification '''
+        standard_parameters = []
+        modified_parameters = []
+        # pycbc may use an n set of input parameters and will want those passed in together
+
         wf = M.get_waveform()
         f, z_max, z = M.get_params(wf)
         amplitude, std_phase = M.decompose_waveform(wf, f, z_max, z, wf['mass1'] * 4.925 * 10e-6,
@@ -26,6 +31,8 @@ class FisherMatrix:
 
     @classmethod
     def num_partial_derivs(cls):
+        # deriv calcd around some fiducial point in parameter space (will have some orienation, chirp mass, DL)
+        # ex. A = alpha = 0, mg = 0
         return 0
 
     @classmethod
