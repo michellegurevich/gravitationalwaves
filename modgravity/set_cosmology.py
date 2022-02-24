@@ -7,7 +7,6 @@ class set_cosmology:
         self.pars = camb.CAMBparams()
         self.pars.set_cosmology(H0=72, ombh2=.0223828, omch2=0.1201075, omk=0, tau=0.06)
         self.results = camb.get_background(self.pars)
-        self.z = z
 
     def get_pars(self):
         return self.pars
