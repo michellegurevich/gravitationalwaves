@@ -29,7 +29,7 @@ class ModifiedPolarization:
 
     @classmethod
     def lambda_A_term(cls, alpha, A_term):
-        return cls.h * A_term ** (1 / (alpha - 2))  # always has units of length irrespective of alpha value
+        return cls.h * A_term ** (1 / (alpha - 2))
 
     @classmethod
     def u(cls, f, chirp_mass):
@@ -141,10 +141,10 @@ class ModifiedPolarization:
 
         return [arr[i].real for i in range(len(f))], [arr[j].imag * 1j for j in range(len(f))]
 
-    """ 
-    
+    """
+
     do not calculate f_dot and set equal to zero to recover max value attained by f
-    
+
     @classmethod
     def calculate_f_max(cls, z):
         f_dot = cls.df_e_over_dt_e() / ((1 + z)**2)
@@ -159,5 +159,5 @@ class ModifiedPolarization:
         term_ii = math.pi * m * f_e
         term_i = (743/336 + 11/4 * eta) * (term_ii**(2/3))
         return factor * (1 - term_i + 4 * math.pi * term_ii)
-        
+
     """

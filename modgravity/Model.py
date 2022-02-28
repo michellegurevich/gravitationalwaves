@@ -6,6 +6,7 @@ from ModifiedPolarization import ModifiedPolarization
 
 class Model:
     bg = set_cosmology()
+    
 
     def __init__(self, cosmo_params, phenom_params, wf_params):
         self.cosmo_params = cosmo_params
