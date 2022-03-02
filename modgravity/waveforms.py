@@ -16,7 +16,7 @@ T_C = 1  # verify in references
 PHI_C = .0001  # verify in references
 
 
-class modify_waveform:
+class waveforms:
 
     def __init__(self, cosmo_params, phenom_params, wf_params):
         self.cosmo_params   = cosmo_params
@@ -132,12 +132,19 @@ class modify_waveform:
         """ calculates standard wave polarization from amplitude and phase terms """
         h = self.gr_amplitude() * np.exp(1j * self.gr_phase())
         # return [arr[i].real for i in range(len(self.f))], [arr[j].imag * 1j for j in range(len(self.f))]
-        return h
+        return h.real, h.imag
 
     def h_modified(self):
         """ calculates modified wave polarization from amplitude and phase terms """
         h_tilde = self.modified_amplitude() * np.exp(1j * self.modified_phase())
-        return h_tilde
+        return h_tilde.real, h_tilde.imag
+
+    def decompose(self):
+        # calculate inner product
+        phi_r, phi_i = self.h_standard()
+        ip = np.lib.scimath.sqrt(phi_i * np.conj(phi_i))  # sqrt(-r) in R -> i*sqrt(r) in C
+        phase = phi_i / ip
+        return ip, phase
 
 """
 
