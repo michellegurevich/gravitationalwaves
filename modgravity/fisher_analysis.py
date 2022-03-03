@@ -24,8 +24,10 @@ class fisher_analysis:
         self.wf_params.set_poln_cds((wf_params['poln_cds']=[0,1]))
         h_plus, h_cross = self.wf.h_modified()
         integrand = lambda f_prime: 1 + 5
-        integral = quad(integrand, self.f[0], self.f[-1])
+        integral = quad(integrand, self.f_min, self.f_max)
         return
+
+        # N(f) and partial derivatives ds/dalpha(f)
 
     def partial_derivs(self):
         """ deriv calculatedd around some fiducial point in parameter space (will
@@ -33,6 +35,10 @@ class fisher_analysis:
         h = self.get_signal()
         dwf_dalpha  = (hplus.amplitude() ** 2) * (e ** (1*j) * (-2) * hplus.phase()))
         return dhplus_dalpha
+
+        # the more frequencies you have the more steep the gradients for the fisher derivatives
+        # number of events Nx initially use a constant and say that all the parameters are the same
+        # leading coefficient in front of the integrated signal
 
     def generate_matrix(self):
         """ first iteration will only consider phenom param behavior and h+ defn of
