@@ -137,13 +137,17 @@ class waveforms:
     def h_modified(self):
         """ calculates modified wave polarization from amplitude and phase terms """
         h_tilde = self.modified_amplitude() * np.exp(1j * self.modified_phase())
+        # remove inf term from start of array (to prevent divide by 0 error)
+        np.nan_to_num(h_tilde, copy=False, nan=0.0, posinf=0.0, neginf=0.0)
         return h_tilde.real, h_tilde.imag
 
     def decompose(self):
         # calculate inner product
         phi_r, phi_i = self.h_standard()
         ip = np.lib.scimath.sqrt(phi_i * np.conj(phi_i))  # sqrt(-r) in R -> i*sqrt(r) in C
+        np.nan_to_num(ip, copy=False, nan=0.0, posinf=0.0, neginf=0.0)
         phase = phi_i / ip
+        np.nan_to_num(phase, copy=False, nan=0.0, posinf=0.0, neginf=0.0)
         return ip, phase
 
 """
