@@ -3,26 +3,47 @@ import numpy as np
 import cmath
 import math
 
-from CalculateDistances import CalculateDistances
-from SetCosmology import SetCosmology
-from ModifiedPolarization import ModifiedPolarization
-from Model import Model
+from distances import distances
+from set_cosmology import set_cosmology
+from waveforms import waveforms
 
 
-class Plots:
-    CD = CalculateDistances()
-    SC = SetCosmology()
-    MP = ModifiedPolarization()
-    Model = Model()
+H_PLANCK = 1  # Planck constant, natural units
 
-    def __init__(self):
-        pass
+class plots:
 
-    @staticmethod
-    def scale_factor(z):
+
+    def __init__(self, cosmo_params, phenom_params, wf_params):
+        self.cosmo_params   = cosmo_params
+        self.phenom_params  = phenom_params
+        self.wf_params      = wf_params
+        self.dist           = distances(cosmo_params, phenom_params)
+        self.sc             = set_cosmology()
+        self.wf             = waveforms(cosmo_params, phenom_params, wf_params)
+
+        # unpack cosmo parameters
+        self.z      = cosmo_params.get('redshift', np.linspace(0,0))
+        self.f      = cosmo_params.get('frequency', np.linspace(0,0))
+        self.E_e    = H_PLANCK * cosmo_params.get('f_e', 1)
+        self.t_e    = cosmo_params.get('t_e', 1)
+        self.t_a    = cosmo_params.get('t_a', 1)
+
+        # unpack phenomenological parameters
+        self.A      = phenom_params.get('a', 0)
+        self.alpha  = phenom_params.get('alpha', 0)
+        self.m_g    = H_PLANCK / phenom_params.get('lambda_g', 1)
+
+        # unpack waveform parameters
+        self.approximant    = wf_params.get('TaylorF2', None)
+        self.m_1            = wf_params.get('mass1', None)
+        self.m_2            = wf_params.get('mass2', None)
+        self.df             = wf_params.get('delta_f', None)
+        self.f_min          = wf_params.get('f_lower', None)
+
+    def scale_factor(self):
         """ plot scale factor against redshift """
-        hp = cls.SC.get_hp(z)
-        plt.plot(z, hp)
+        hp = self.sc.get_hp(self.z)
+        plt.plot(self.z, hp)
         plt.xlabel('$z$')
         plt.ylabel('$H(t)$')
         plt.title('$H(t)$ as a function of redshift')
@@ -68,7 +89,7 @@ class Plots:
     def modified_polarization(f, f_cut, z, z_max, alpha, A_term, chirp_mass, m_1, m_2):
         """ plot the modified polarization, h~(f), in frequency space """
         htilde_real, _ = cls.Model.mod_polarization_array(f, f_cut, z, z_max, alpha, A_term, chirp_mass, m_1, m_2)
-        """ f_em / f_obs = 1 + z => f (measured as defined in paper, aka f_obs) => define array of frequency values 
+        """ f_em / f_obs = 1 + z => f (measured as defined in paper, aka f_obs) => define array of frequency values
         spanning the expected range for LISA """
         plt.plot(f, htilde_real)
         plt.xscale('log')  # set xscale to log for plot axes

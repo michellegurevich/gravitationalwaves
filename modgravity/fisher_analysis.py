@@ -1,7 +1,6 @@
-import camb
 import numpy as np
 from scipy.integrate import quad
-
+from scipy.fft import fft
 from waveforms import waveforms
 
 
@@ -14,16 +13,19 @@ class fisher_analysis:
         self.phenom_params  = phenom_params
         self.wf_params      = wf_params
         self.wf             = waveforms(cosmo_params, phenom_params, wf_params)
+        self.f_min          = 10e0 # Hz
+        self.f_max          = 10e4 # Hz
 
     def generate_noise(self):
-        xf = fft(x - x.mean())
-        Sxx = 2 * dt ** 2 / T * (xf * xf.conj())  # Compute spectrum
-        Sxx = Sxx[:int(len(x) / 2)]
+        f = self.cosmo_params['frequency']
+        xf = fft(f - np.mean(f))
+        Sff = 2 * dt ** 2 / T * (xf * xf.conj())  # Compute spectrum
+        Sxx = Sxx[:int(len(f) / 2)]
         return noise
 
     def integrated_signal(self):
-        self.wf_params.set_poln_cds()
-        self.wf_params.set_poln_cds()
+        # self.wf_params.set_poln_cds()
+        # self.wf_params.set_poln_cds()
         h_plus, h_cross = self.wf.h_modified()
         integrand = lambda f_prime: 1 + 5
         integral = quad(integrand, self.f_min, self.f_max)
