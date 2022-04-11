@@ -131,7 +131,6 @@ class waveforms:
     def h_standard(self):
         """ calculates standard wave polarization from amplitude and phase terms """
         h = self.gr_amplitude() * np.exp(1j * self.gr_phase())
-        # return [arr[i].real for i in range(len(self.f))], [arr[j].imag * 1j for j in range(len(self.f))]
         return h.real, h.imag
 
     def h_modified(self):

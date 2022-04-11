@@ -79,55 +79,44 @@ class figures:
                   + str(self.alpha) + ', A = ' + str(self.A))  # Double Special Relativity')
         return plt.show()
 
-    @staticmethod
-    def modified_polarization(f, f_cut, z, z_max, alpha, A_term, chirp_mass, m_1, m_2):
+    def h_standard(self):
+        """ plot the standard polarization, h(f), in frequency space """
+        h_plus, h_cross = self.wf.h_standard()
+        plt.plot(self.f, h_plus)
+        #plt.xscale('log')  # set xscale to log for plot axes
+        #plt.yscale('log')  # set yscale to log for plot axes
+        plt.xlabel('$log(f)$')
+        plt.ylabel('$log(h)$')
+        plt.title('Standard polarization in frequency space')
+        return plt.show()
+
+    def h_modified(self):
         """ plot the modified polarization, h~(f), in frequency space """
-        htilde_real, _ = cls.Model.mod_polarization_array(f, f_cut, z, z_max, alpha, A_term, chirp_mass, m_1, m_2)
+        h_plus, _ = self.wf.h_modified()
         """ f_em / f_obs = 1 + z => f (measured as defined in paper, aka f_obs) => define array of frequency values
         spanning the expected range for LISA """
-        plt.plot(f, htilde_real)
-        plt.xscale('log')  # set xscale to log for plot axes
-        plt.yscale('log')  # set yscale to log for plot axes
-        plt.xlabel('$lg(f)$')
+        plt.plot(self.f, h_plus)
+        #plt.xscale('log')  # set xscale to log for plot axes
+        #plt.yscale('log')  # set yscale to log for plot axes
+        plt.xlabel('$log(f)$')
         plt.ylabel(r'log($\tilde{h}$)')
         plt.title('Modified polarization in frequency space')
         return plt.show()
 
-    @staticmethod
-    def standard_polarization(f, z_max, z, m_1, m_2):
-        """ plot the standard polarization, h(f), in frequency space """
-        h_real, h_imag = cls.MP.std_polarization_array(f, z_max, z, m_1, m_2)
-        plt.plot(f, h_real)
-        plt.xscale('log')  # set xscale to log for plot axes
-        plt.yscale('log')  # set yscale to log for plot axes
-        plt.xlabel('$lg(f)$')
-        plt.ylabel('$lg(h)$')
-        plt.title('Standard polarization in frequency space')
-        return plt.show()
-
-    @staticmethod
-    def phase_check():
-        m_1 = 30 * 4.925 * 10e-6
-        m_2 = 30 * 4.925 * 10e-6
-        df = 1 / 320
-        f = np.linspace(30, 350, int(320 / df))
-        z_max = 1
-
+    def phase_check(self, phi_r, phi_i):
         # calculate inner product
-        phi_r, phi_i = MP.std_polarization_array(f, z_max, np.linspace(0, z_max), m_1, m_2)
-        ip = np.lib.scimath.sqrt(phi_i * np.conj(phi_i))  # sqrt(-r) in R -> i*sqrt(r) in C
-        phase = phi_i / ip
+        ip, phase = self.wf.decompose()
 
         # plot A(f) - which should equal inner product
         plt.subplot(2, 1, 1)
-        plt.plot(f, ip)
+        print(len(self.f), len(ip))
+        plt.plot(self.f, ip)
         plt.xlabel('Frequency (Hz)')
         plt.ylabel('Amplitude')
 
         # plot e^(i*Psi) - calculated as phi / mag(phi)
         plt.subplot(2, 1, 2)
-        plt.plot(f, phase)
+        plt.plot(self.f, phase)
         plt.xlabel('Frequency (Hz)')
         plt.ylabel('Phase')
-
         return plt.show()
