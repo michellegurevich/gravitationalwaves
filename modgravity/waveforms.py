@@ -3,6 +3,8 @@ import cmath
 import numpy as np
 
 from matplotlib import pyplot as plt
+
+from set_cosmology import set_cosmology
 from distances import distances
 
 
@@ -11,10 +13,9 @@ SOLAR_MASS = 4.925 * 10e-6
 F_E = 10 ** 4  #Hz
 LAMBDA_G = 1.6 * 10 ** 16  # m
 EPSILON_LIGO = 1  # constant term for LIGO
-# EPSILON_LISA = math.sqrt(3) / 2  # for LISA
+EPSILON_LISA = math.sqrt(3) / 2  # constant term for LISA
 T_C = 1  # verify in references
 PHI_C = .0001  # verify in references
-
 
 class waveforms:
 
@@ -22,19 +23,22 @@ class waveforms:
         self.cosmo_params   = cosmo_params
         self.phenom_params  = phenom_params
         self.wf_params      = wf_params
+
+        # instantiate constructors
+        self.sc             = set_cosmology()
         self.dist           = distances(cosmo_params, phenom_params)
 
         # unpack cosmo parameters
-        self.z      = cosmo_params.get('redshift', np.linspace(0,0))
-        self.f      = cosmo_params.get('frequency', np.linspace(0,0))
-        self.E_e    = H_PLANCK * cosmo_params.get('f_e', 1)
-        self.t_e    = cosmo_params.get('t_e', 1)
-        self.t_a    = cosmo_params.get('t_a', 1)
+        self.z              = cosmo_params.get('redshift', np.linspace(0,0))
+        self.f              = cosmo_params.get('frequency', np.linspace(0,0))
+        self.E_e            = H_PLANCK * cosmo_params.get('f_e', 1)
+        self.t_e            = cosmo_params.get('t_e', 1)
+        self.t_a            = cosmo_params.get('t_a', 1)
 
         # unpack phenomenological parameters
-        self.A      = phenom_params.get('a', 0)
-        self.alpha  = phenom_params.get('alpha', 0)
-        self.m_g    = H_PLANCK / phenom_params.get('lambda_g', 1)
+        self.A              = phenom_params.get('A', 0)
+        self.alpha          = phenom_params.get('alpha', 0)
+        self.m_g            = H_PLANCK / phenom_params.get('lambda_g', 1)
 
         # unpack waveform parameters
         self.approximant    = wf_params.get('TaylorF2', None)

@@ -1,13 +1,25 @@
-import numpy as np
-import cmath
+"""
+
+figures.py written by michelle gurevich
+
+generates figures for thesis, including all plots used to verify signal behavior and
+the particular effects of introducing phenomenological parameters
+
+"""
+
 import math
+import cmath
+import numpy as np
+
 from matplotlib import pyplot as plt
 from matplotlib import colors
-from distances import distances
+
 from set_cosmology import set_cosmology
+from distances import distances
 from waveforms import waveforms
 
 
+# define global constants
 H_PLANCK = 1  # Planck constant, natural units
 
 class figures:
@@ -16,8 +28,10 @@ class figures:
         self.cosmo_params   = cosmo_params
         self.phenom_params  = phenom_params
         self.wf_params      = wf_params
-        self.dist           = distances(cosmo_params, phenom_params)
+
+        # instantiate constructors
         self.sc             = set_cosmology()
+        self.dist           = distances(cosmo_params, phenom_params)
         self.wf             = waveforms(cosmo_params, phenom_params, wf_params)
 
         # unpack cosmo parameters
@@ -49,14 +63,16 @@ class figures:
         return plt.show()
 
     def alpha_distance_ratio(self):
-        """ plot ratios of (modified) alpha and (standard) luminosity distances against redshift """
-        alpha_values = np.arange(0, 4.5, .5)  # alpha values end at 4, per GR tests paper specs
+        """ plot ratios of (modified) alpha and (standard) luminosity distances
+        against redshift """
+        alpha_values = np.arange(0, 4.5, .5)
         for a in alpha_values:
             D_l = self.dist.luminosity(self.z)
             D_a = self.dist.mod_luminosity(self.z, a)
-            results = np.divide(D_l[1:], D_a[1:])  # division by zero error, skip first element
+            results = np.divide(D_l[1:], D_a[1:])
             # results = np.insert(results, 0, 0, axis=None)
-            plt.plot(np.hstack(np.linspace(0,12)[1:]), np.hstack(results), label=r'$\alpha$ = '+str(a))#, c=colors.Colormap('coolwarm'))
+            plt.plot(np.hstack(np.linspace(0,12)[1:]), np.hstack(results),
+                label=r'$\alpha$ = '+str(a))#, c=colors.Colormap('coolwarm'))
 
         plt.xlabel(r'$z$')
         plt.ylabel(r'$D_L / D_{\alpha}$ Mpc')
@@ -67,7 +83,8 @@ class figures:
         return plt.show()
 
     def chi_ratio(self):
-        """ plot the ratio of conformal distance chi with and without modification terms """
+        """ plot the ratio of conformal distance chi with and without modification
+        terms """
         eta_dsrt = 1 * 10e-35  # parameter of order Planck length
         chi = self.dist.chi_term(self.z)
         mod_chi = self.dist.mod_chi_term(self.z)
@@ -75,16 +92,16 @@ class figures:
         plt.plot(self.z, chi / mod_chi)
         plt.xlabel(r'$z$')
         plt.ylabel(r'$\chi_{e | A,\alpha=0} / \chi_e$')
-        plt.title('Ratio of standard to modified conformal distance for 'r'$\alpha$'' = '
-                  + str(self.alpha) + ', A = ' + str(self.A))  # Double Special Relativity')
+        plt.title('Ratio of conformal distances for 'r'$\alpha$'' = '
+                  + str(self.alpha) + ', A = ' + str(self.A))
         return plt.show()
 
     def h_standard(self):
         """ plot the standard polarization, h(f), in frequency space """
         h_plus, h_cross = self.wf.h_standard()
         plt.plot(self.f, h_plus)
-        #plt.xscale('log')  # set xscale to log for plot axes
-        #plt.yscale('log')  # set yscale to log for plot axes
+        plt.xscale('log')  # set xscale to log for plot axes
+        plt.yscale('log')  # set yscale to log for plot axes
         plt.xlabel('$log(f)$')
         plt.ylabel('$log(h)$')
         plt.title('Standard polarization in frequency space')
@@ -93,30 +110,33 @@ class figures:
     def h_modified(self):
         """ plot the modified polarization, h~(f), in frequency space """
         h_plus, _ = self.wf.h_modified()
-        """ f_em / f_obs = 1 + z => f (measured as defined in paper, aka f_obs) => define array of frequency values
-        spanning the expected range for LISA """
+        """ f_em / f_obs = 1 + z => f (measured as defined in paper, aka f_obs) =>
+        define array of frequency values spanning the expected range for LISA """
         plt.plot(self.f, h_plus)
-        #plt.xscale('log')  # set xscale to log for plot axes
-        #plt.yscale('log')  # set yscale to log for plot axes
+        plt.xscale('log')  # set xscale to log for plot axes
+        plt.yscale('log')  # set yscale to log for plot axes
         plt.xlabel('$log(f)$')
         plt.ylabel(r'log($\tilde{h}$)')
         plt.title('Modified polarization in frequency space')
         return plt.show()
 
-    def phase_check(self, phi_r, phi_i):
+    def phase_check(self):
         # calculate inner product
         ip, phase = self.wf.decompose()
 
         # plot A(f) - which should equal inner product
         plt.subplot(2, 1, 1)
-        print(len(self.f), len(ip))
         plt.plot(self.f, ip)
+        plt.xscale('log')
+        plt.yscale('log')
         plt.xlabel('Frequency (Hz)')
         plt.ylabel('Amplitude')
 
         # plot e^(i*Psi) - calculated as phi / mag(phi)
         plt.subplot(2, 1, 2)
         plt.plot(self.f, phase)
+        plt.xscale('log')
+        plt.yscale('log')
         plt.xlabel('Frequency (Hz)')
         plt.ylabel('Phase')
         return plt.show()
